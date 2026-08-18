@@ -35,7 +35,8 @@
           <option value="USD">USD ($)</option>
           <option value="IDR">IDR (Rp)</option>
         </select>
-        <button onclick="app.openShareModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 6px;">🔗 Share</button>
+        <button onclick="app.openGiftModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 6px; background: rgba(197, 168, 128, 0.25); color: var(--gold-light);">🎁 Gift a Session</button>
+        <button onclick="app.openShareModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 4px;">🔗 Share</button>
         <button onclick="app.openQrModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 4px;">📱 Barcode / QR</button>
         <button id="admin-nav-btn" onclick="app.openAdminLoginModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 4px;">🔒 Admin Login</button>
       </div>
@@ -196,7 +197,109 @@
           </div>
 
           <div class="photographers-grid" id="photographers-grid-container">
-            <!-- Dynamic Photographers Rendered Here -->
+      <!-- TESTIMONIALS SECTION -->
+      <section id="testimonials" class="section" style="background: var(--bg-card);">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-subtitle">Pilgrim Voices & Memories</span>
+            <h2 class="section-title">What Our Clients Cherish</h2>
+            <p class="section-description">Over 1,200+ families, couples, and solo pilgrims have trusted us with their most sacred memories in Madinah.</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+            
+            <div class="selectable-card" style="padding: 24px; position: relative;">
+              <div style="color: #F59E0B; font-size: 1.1rem; margin-bottom: 12px;">★★★★★</div>
+              <p style="font-style: italic; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7; margin-bottom: 16px;">
+                "Masya Allah! Sesi foto ba'da Subuh di pelataran payung Masjid Nabawi bersama Wahyu Afrian sangat berkesan. Foto-fotonya sangat elegan dan timeless, prosesnya ramah dan tidak mengganggu ibadah sama sekali."
+              </p>
+              <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+                <div>
+                  <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 2px;">Drs. H. Hendra & Hj. Nuraini</h4>
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">Family Pilgrimage • Jakarta, Indonesia 🇮🇩</span>
+                </div>
+                <span class="status-pill CONFIRMED" style="font-size: 0.7rem;">Verified Pilgrim</span>
+              </div>
+            </div>
+
+            <div class="selectable-card" style="padding: 24px; position: relative;">
+              <div style="color: #F59E0B; font-size: 1.1rem; margin-bottom: 12px;">★★★★★</div>
+              <p style="font-style: italic; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7; margin-bottom: 16px;">
+                "Booking our honeymoon portrait session in Madinah was the best decision of our Umrah trip. The lighting during Golden Hour near Mount Uhud was breathtaking. Delivered in 4K within 24 hours!"
+              </p>
+              <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+                <div>
+                  <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 2px;">Farhan & Aisyah Zulkifli</h4>
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">Couple & Honeymoon • Kuala Lumpur, Malaysia 🇲🇾</span>
+                </div>
+                <span class="status-pill CONFIRMED" style="font-size: 0.7rem;">Verified Pilgrim</span>
+              </div>
+            </div>
+
+            <div class="selectable-card" style="padding: 24px; position: relative;">
+              <div style="color: #F59E0B; font-size: 1.1rem; margin-bottom: 12px;">★★★★★</div>
+              <p style="font-style: italic; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7; margin-bottom: 16px;">
+                "Exceptional craftsmanship. As a solo pilgrim from the UK, having dignified editorial portraits near the sacred landmarks was a dream come true. The WhatsApp bot automated everything seamlessly."
+              </p>
+              <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+                <div>
+                  <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 2px;">Dr. Tariq Mansoor</h4>
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">Solo Pilgrimage • London, United Kingdom 🇬🇧</span>
+                </div>
+                <span class="status-pill CONFIRMED" style="font-size: 0.7rem;">Verified Pilgrim</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- STYLE & WARDROBE GUIDE SECTION -->
+      <section id="style-guide" class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-subtitle">Editorial Preparation</span>
+            <h2 class="section-title">Madinah Wardrobe & Lighting Guide</h2>
+            <p class="section-description">Our artistic recommendations for color harmony, modest elegance, and perfect natural light in the Holy City.</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+            
+            <div class="selectable-card" style="border-top: 3px solid var(--gold-hover);">
+              <div style="font-size: 1.8rem; margin-bottom: 10px;">🌅</div>
+              <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Fajr & Morning Soft Glow</h3>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.6;">
+                <strong>Best Time: 06:00 – 07:30</strong><br>
+                Crisp morning air and gentle pastel sky tones. Ideal for quiet moments at Masjid Nabawi courtyard with open umbrellas and minimal crowds.
+              </p>
+            </div>
+
+            <div class="selectable-card" style="border-top: 3px solid var(--gold-hover);">
+              <div style="font-size: 1.8rem; margin-bottom: 10px;">🌇</div>
+              <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Maghrib Golden Hour</h3>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.6;">
+                <strong>Best Time: 17:15 – 18:30</strong><br>
+                Rich golden reflections on limestone minarets and Mount Uhud red cliffs. Produces dramatic fine-art warmth and magazine-grade portraits.
+              </p>
+            </div>
+
+            <div class="selectable-card" style="border-top: 3px solid var(--gold-hover);">
+              <div style="font-size: 1.8rem; margin-bottom: 10px;">👗</div>
+              <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Harmonious Color Palettes</h3>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.6;">
+                <strong>Recommended:</strong> Pure White, Cream, Sandy Beige, Terracotta, Olive Green, Soft Pastel, or Classic Black Abaya.<br>
+                Avoid neon or high-contrast busy patterns.
+              </p>
+            </div>
+
+            <div class="selectable-card" style="border-top: 3px solid var(--gold-hover);">
+              <div style="font-size: 1.8rem; margin-bottom: 10px;">📍</div>
+              <h3 style="font-size: 1.1rem; margin-bottom: 8px;">GPS Meeting Points</h3>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.6;">
+                Each session includes a live Google Maps pin sent to your WhatsApp with exact rendezvous points (Gate 22, Gate 305, or Uhud Archer's Hill).
+              </p>
+            </div>
+
           </div>
         </div>
       </section>
@@ -418,6 +521,44 @@
                 <div class="form-group" style="grid-column: 1 / -1;">
                   <label class="form-label">Special Requests, Meeting Notes, or Preferred Poses</label>
                   <textarea id="detail-notes-input" class="form-textarea" placeholder="e.g. Traveling with elderly parents, prefer elevator access, would like photos near green dome minarets, etc."></textarea>
+                </div>
+
+                <div style="grid-column: 1 / -1; margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+                  <label class="form-label" style="font-size: 1rem; color: var(--gold-hover); margin-bottom: 12px;">🌟 Optional VIP Experience Upgrades & Add-ons</label>
+                  <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <label class="selectable-card" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 14px 18px; margin: 0;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <input type="checkbox" id="addon-express" onchange="bookingWizard.toggleAddon('express', 150)" style="transform: scale(1.3); cursor: pointer;">
+                        <div>
+                          <strong style="font-size: 0.95rem;">⚡ Express 24-Hour 4K Digital Delivery</strong>
+                          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Receive all curated master edits within 24 hours before your Umrah flight departs.</p>
+                        </div>
+                      </div>
+                      <span style="font-weight: 700; color: var(--gold-hover); font-size: 0.92rem;">+SAR 150</span>
+                    </label>
+
+                    <label class="selectable-card" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 14px 18px; margin: 0;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <input type="checkbox" id="addon-album" onchange="bookingWizard.toggleAddon('album', 250)" style="transform: scale(1.3); cursor: pointer;">
+                        <div>
+                          <strong style="font-size: 0.95rem;">📖 Luxury Hardcover Album Delivered to Madinah Hotel</strong>
+                          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Premium 20-page linen/leather album hand-delivered to your hotel lobby in Madinah.</p>
+                        </div>
+                      </div>
+                      <span style="font-weight: 700; color: var(--gold-hover); font-size: 0.92rem;">+SAR 250</span>
+                    </label>
+
+                    <label class="selectable-card" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 14px 18px; margin: 0;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <input type="checkbox" id="addon-reel" onchange="bookingWizard.toggleAddon('reel', 200)" style="transform: scale(1.3); cursor: pointer;">
+                        <div>
+                          <strong style="font-size: 0.95rem;">🎥 Cinematic 60s 4K Instagram / TikTok Reel</strong>
+                          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Professionally color-graded vertical video reel with nasheed/audio for social sharing.</p>
+                        </div>
+                      </div>
+                      <span style="font-weight: 700; color: var(--gold-hover); font-size: 0.92rem;">+SAR 200</span>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -997,10 +1138,10 @@
     </div>
   </footer>
 
-  <!-- Scripts (Cache Buster v2.3) -->
-  <script src="/js/app.js?v=2.3"></script>
-  <script src="/js/booking-engine.js?v=2.3"></script>
-  <script src="/js/client-portal.js?v=2.3"></script>
-  <script src="/js/admin-dashboard.js?v=2.3"></script>
+  <!-- Scripts (Cache Buster v2.4) -->
+  <script src="/js/app.js?v=2.4"></script>
+  <script src="/js/booking-engine.js?v=2.4"></script>
+  <script src="/js/client-portal.js?v=2.4"></script>
+  <script src="/js/admin-dashboard.js?v=2.4"></script>
 </body>
 </html>

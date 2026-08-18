@@ -11,6 +11,7 @@ const bookingWizard = {
   selectedPhotographerId: 'any',
   selectedDateStr: null,
   selectedTimeSlot: null,
+  selectedAddons: {},
   selectedPaymentMethod: 'Credit Card / Mada',
   clientData: {},
   photoshootDetails: {},
@@ -18,6 +19,20 @@ const bookingWizard = {
 
   calYear: new Date().getFullYear(),
   calMonth: new Date().getMonth(),
+
+  toggleAddon(key, price) {
+    if (this.selectedAddons[key]) {
+      delete this.selectedAddons[key];
+    } else {
+      this.selectedAddons[key] = price;
+    }
+    this.updateSummaryBar();
+    this.renderStep7Payment();
+  },
+
+  getAddonsTotal() {
+    return Object.values(this.selectedAddons).reduce((a, b) => a + b, 0);
+  },
 
   init(preSelectedServiceId = null, preSelectedPackageId = null, preSelectedPhotographerId = null) {
     this.currentStep = 1;
@@ -382,10 +397,22 @@ const bookingWizard = {
     const container = document.getElementById('step7-pricing-summary');
     if (!container || !this.selectedPackage) return;
 
-    const totalPrice = this.selectedPackage.price_sar;
+    const basePrice = this.selectedPackage.price_sar;
+    const addonsTotal = this.getAddonsTotal();
+    const totalPrice = basePrice + addonsTotal;
     const depositPct = this.selectedPackage.deposit_percentage || 30;
     const depositAmount = Math.round(totalPrice * (depositPct / 100));
     const balanceAmount = totalPrice - depositAmount;
+
+    let addonsHtml = '';
+    if (Object.keys(this.selectedAddons).length > 0) {
+      addonsHtml = Object.entries(this.selectedAddons).map(([k, v]) => `
+        <div class="receipt-row" style="font-size: 0.84rem; color: var(--gold-light);">
+          <span class="receipt-label">↳ Add-on: ${k.toUpperCase()}</span>
+          <span class="receipt-value">+${app.formatPrice(v)}</span>
+        </div>
+      `).join('');
+    }
 
     container.innerHTML = `
       <div class="receipt-row">
@@ -394,7 +421,7 @@ const bookingWizard = {
       </div>
       <div class="receipt-row">
         <span class="receipt-label">Scheduled Date & Time (Asia/Riyadh)</span>
-        <span class="receipt-value">${this.selectedDateStr} from ${this.selectedTimeSlot.time} to ${this.selectedTimeSlot.end}</span>
+        <span class="receipt-value">${this.selectedDateStr} from ${this.selectedTimeSlot ? this.selectedTimeSlot.time : '-'} to ${this.selectedTimeSlot ? this.selectedTimeSlot.end : '-'}</span>
       </div>
       <div class="receipt-row">
         <span class="receipt-label">Location</span>
@@ -405,15 +432,20 @@ const bookingWizard = {
         <span class="receipt-value">${this.clientData.name} (${this.clientData.whatsapp})</span>
       </div>
       <div class="receipt-row">
-        <span class="receipt-label">Total Package Price</span>
-        <span class="receipt-value">${app.formatPrice(totalPrice)}</span>
+        <span class="receipt-label">Base Collection Price</span>
+        <span class="receipt-value">${app.formatPrice(basePrice)}</span>
+      </div>
+      ${addonsHtml}
+      <div class="receipt-row" style="border-top: 1px solid var(--border-light); margin-top: 6px; padding-top: 6px;">
+        <span class="receipt-label" style="font-weight: 700;">Total Amount</span>
+        <span class="receipt-value" style="font-weight: 700; color: var(--gold-hover); font-size: 1.1rem;">${app.formatPrice(totalPrice)}</span>
       </div>
       <div class="receipt-row" style="background: rgba(197, 168, 128, 0.1); padding: 12px; border-radius: var(--radius-sm); margin-top: 8px;">
         <span class="receipt-label" style="font-weight: 700; color: var(--gold-hover);">Deposit Due Now (${depositPct}%)</span>
         <span class="receipt-value" style="font-size: 1.2rem; color: var(--gold-hover);">${app.formatPrice(depositAmount)}</span>
       </div>
       <div class="receipt-row">
-        <span class="receipt-label">Remaining Balance Due on Photoshoot Day</span>
+        <span class="receipt-label">Remaining Balance (Due in Madinah)</span>
         <span class="receipt-value">${app.formatPrice(balanceAmount)}</span>
       </div>
     `;
@@ -498,6 +530,12 @@ const bookingWizard = {
     if (!container || !this.createdBooking) return;
 
     const b = this.createdBooking;
+    const mapQuery = encodeURIComponent(`${b.location_name}, Al Madinah, Saudi Arabia`);
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+    let addonsText = Object.keys(this.selectedAddons).length > 0 
+      ? Object.keys(this.selectedAddons).join(', ').toUpperCase() 
+      : 'Standard Inclusions';
 
     container.innerHTML = `
       <div class="confirmation-icon-wrap">✓</div>
@@ -513,6 +551,7 @@ const bookingWizard = {
         <div class="receipt-row"><span class="receipt-label">Date & Time</span><span class="receipt-value">📅 ${b.booking_date} (${b.start_time} – ${b.end_time})</span></div>
         <div class="receipt-row"><span class="receipt-label">Meeting Point Location</span><span class="receipt-value">📍 ${b.location_name}</span></div>
         <div class="receipt-row"><span class="receipt-label">Collection</span><span class="receipt-value">📸 ${b.service_title} — ${b.package_name}</span></div>
+        <div class="receipt-row"><span class="receipt-label">VIP Add-ons</span><span class="receipt-value" style="color: var(--gold-light);">${addonsText}</span></div>
         <div class="receipt-row"><span class="receipt-label">Deposit Paid</span><span class="receipt-value" style="color: var(--status-confirmed);">SAR ${b.deposit_paid_sar} (Deposit Verified)</span></div>
       </div>
 
@@ -520,13 +559,15 @@ const bookingWizard = {
         <a href="${b.whatsapp_url}" target="_blank" class="btn btn-primary" style="background: #25D366; color: #fff; border: none;">
           💬 Send Confirmation to WhatsApp
         </a>
+        <a href="${mapsUrl}" target="_blank" class="btn btn-secondary" style="background: rgba(197, 168, 128, 0.2); color: var(--gold-light); border: 1px solid var(--gold-border);">
+          📍 Open Google Maps Meeting Point
+        </a>
         <button onclick="window.print()" class="btn btn-dark">
           🖨️ Print Receipt
         </button>
       </div>
 
-      <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border-light);">
-        <button onclick="app.switchView('client-portal'); document.getElementById('client-search-booking-id').value = '${b.id}'; clientPortal.searchBooking('${b.id}');" class="btn btn-secondary btn-sm">
+        <button onclick="app.switchView('portal'); document.getElementById('client-search-booking-id').value = '${b.id}'; clientPortal.searchBooking('${b.id}');" class="btn btn-secondary btn-sm" style="margin-top: 10px;">
           Open in "My Booking" Client Portal
         </button>
       </div>

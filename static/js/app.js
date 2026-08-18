@@ -267,15 +267,63 @@ const app = {
     `);
   },
 
-  copyWebsiteLink() {
-    const currentUrl = window.location.origin;
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(currentUrl).then(() => {
-        this.showToast('Website link copied to clipboard!', 'success');
-      });
-    } else {
-      this.showToast('Link: ' + currentUrl, 'info');
-    }
+  // ---------------- GIFT A PHOTOSHOOT MODAL ---------------- //
+  openGiftModal() {
+    this.openModal(`
+      <div style="max-width: 480px; margin: 0 auto; text-align: left;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <span class="section-subtitle">Sacred Pilgrimage Gift</span>
+          <h3 style="font-size: 1.5rem; margin: 4px 0 8px;">🎁 Gift an Umrah Photoshoot</h3>
+          <p style="font-size: 0.86rem; color: var(--text-secondary);">
+            Surprise your parents, spouse, or family who are currently in Madinah with a VIP fine-art photoshoot session voucher.
+          </p>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #1C1A17 0%, #2A2620 100%); border: 2px solid var(--gold-hover); border-radius: var(--radius-md); padding: 20px; color: #fff; margin-bottom: 20px; position: relative; box-shadow: var(--shadow-md);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+            <div>
+              <span style="font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-light);">VIP Gift Certificate</span>
+              <h4 style="font-size: 1.2rem; margin-top: 4px; color: #fff;" id="gift-cert-recipient">For: Beloved Family</h4>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.75rem; color: var(--gold-light);">Voucher Code:</span>
+              <div style="font-size: 0.95rem; font-weight: 700; color: #fff; letter-spacing: 0.08em;">MDN-GIFT-2026</div>
+            </div>
+          </div>
+
+          <p style="font-size: 0.84rem; color: rgba(255,255,255,0.8); line-height: 1.5; font-style: italic; border-left: 2px solid var(--gold-hover); padding-left: 12px; margin-bottom: 16px;">
+            "May your sacred journey to the Radiant City of Madinah be blessed with peace and cherished milestones preserved forever."
+          </p>
+
+          <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: rgba(255,255,255,0.6);">
+            <span>Valid for any 2026/2027 Season</span>
+            <span>Madinah, Kingdom of Saudi Arabia</span>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label class="form-label">Recipient Name (Nama Penerima Hadiah)</label>
+            <input type="text" id="gift-input-name" class="form-input" placeholder="e.g. Bapak Hendra & Ibu Nuraini" oninput="document.getElementById('gift-cert-recipient').textContent = 'For: ' + (this.value || 'Beloved Family')">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button onclick="app.startBooking(2)" class="btn btn-primary" style="flex: 1;">
+            💳 Book & Pay Voucher
+          </button>
+          <button onclick="app.shareGiftVoucher()" class="btn btn-secondary">
+            💬 Send via WhatsApp
+          </button>
+        </div>
+      </div>
+    `);
+  },
+
+  shareGiftVoucher() {
+    const name = document.getElementById('gift-input-name') ? (document.getElementById('gift-input-name').value || 'Keluarga Tercinta') : 'Keluarga';
+    const text = `🎁 *VIP GIFT VOUCHER — MADINAH PHOTOSHOOT*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nSpesial untuk: *${name}*\n\nAnda mendapatkan Hadiah Voucher Sesi Pemotretan Fine-Art di Masjid Nabawi & Landmark Madinah.\n\nSilakan pilih jadwal dan fotografer favorit Anda di sini:\n👉 https://madinah-photography.vercel.app\n\nKode Voucher: *MDN-GIFT-2026*\n\n_Semoga ibadah Umrah Anda mabrur dan penuh berkah!_ ✨`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   },
 
   loadCustomPortfolio() {
