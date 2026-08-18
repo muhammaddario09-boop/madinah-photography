@@ -158,7 +158,109 @@ const app = {
           this.photographers[0].name = parsed.leadPhotog;
           this.photographers[0].title = "Lead Studio Photographer & Owner";
         }
+
+        // Apply Custom Instagram & Footer
+        if (parsed.instagram) {
+          const igBtn = document.getElementById('footer-ig-btn');
+          if (igBtn) {
+            const cleanIg = parsed.instagram.replace('@', '');
+            igBtn.href = parsed.instagram.startsWith('http') ? parsed.instagram : `https://instagram.com/${cleanIg}`;
+            igBtn.textContent = `📸 Instagram (${parsed.instagram})`;
+          }
+        }
+
+        if (parsed.studioEmail) {
+          const el = document.getElementById('footer-email-val');
+          if (el) el.textContent = parsed.studioEmail;
+        }
+
+        if (parsed.studioAddress) {
+          const el = document.getElementById('footer-address-text');
+          if (el) el.textContent = `📍 ${parsed.studioAddress}`;
+        }
+
+        if (parsed.footerBio) {
+          const el = document.getElementById('footer-bio-desc');
+          if (el) el.textContent = parsed.footerBio;
+        }
+
+        if (parsed.whatsapp) {
+          const el = document.getElementById('footer-whatsapp-val');
+          if (el) el.textContent = parsed.whatsapp;
+          const btn = document.getElementById('footer-whatsapp-btn');
+          if (btn) btn.href = `https://wa.me/${parsed.whatsapp.replace(/[^0-9]/g, '')}`;
+        }
       } catch (e) {}
+    }
+  },
+
+  // ---------------- QR CODE & SHARE MODALS ---------------- //
+  openQrModal() {
+    const currentUrl = window.location.origin;
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(currentUrl)}&color=141312&bgcolor=FAF7F2`;
+
+    this.openModal(`
+      <div style="text-align: center; max-width: 380px; margin: 0 auto;">
+        <span class="section-subtitle">Official Studio Barcode</span>
+        <h3 style="font-size: 1.5rem; margin: 4px 0 14px;">Scan & Share Website</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;">
+          Scan with your smartphone camera to immediately open and book fine-art photography in Madinah.
+        </p>
+
+        <div style="background: var(--bg-primary); padding: 18px; border-radius: var(--radius-md); border: 2px solid var(--gold-border); display: inline-block; margin-bottom: 20px; box-shadow: var(--shadow-sm);">
+          <img src="${qrApiUrl}" alt="Madinah Photography QR Code" style="width: 220px; height: 220px; border-radius: 8px; display: block;">
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <a href="${qrApiUrl}" download="madinah-photography-qr.png" target="_blank" class="btn btn-primary btn-sm">
+            💾 Download Barcode / QR
+          </a>
+          <button onclick="app.copyWebsiteLink()" class="btn btn-secondary btn-sm">
+            📋 Copy Website Link
+          </button>
+        </div>
+      </div>
+    `);
+  },
+
+  openShareModal() {
+    const currentUrl = window.location.origin;
+    const shareText = `🌟 NOOR MADINAH — Luxury Fine Art Photography in Madinah, Saudi Arabia. Book your sacred memories & Umrah photoshoot here: ${currentUrl}`;
+
+    this.openModal(`
+      <div style="text-align: center; max-width: 420px; margin: 0 auto;">
+        <span class="section-subtitle">Spread The Beauty</span>
+        <h3 style="font-size: 1.5rem; margin: 4px 0 14px;">Share Studio Website</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 24px;">
+          Share directly with family, friends, or Umrah pilgrimage groups:
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <a href="https://wa.me/?text=${encodeURIComponent(shareText)}" target="_blank" class="btn btn-primary" style="background: #25D366; color: #fff; border: none;">
+            💬 Share to WhatsApp
+          </a>
+          <a href="https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent('Noor Madinah Fine Art Photography')}" target="_blank" class="btn btn-secondary" style="background: #229ED9; color: #fff; border: none;">
+            ✈️ Share to Telegram
+          </a>
+          <button onclick="app.copyWebsiteLink()" class="btn btn-dark">
+            📋 Copy Link to Clipboard
+          </button>
+          <button onclick="app.openQrModal()" class="btn btn-secondary">
+            📱 Show Barcode / QR Code
+          </button>
+        </div>
+      </div>
+    `);
+  },
+
+  copyWebsiteLink() {
+    const currentUrl = window.location.origin;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(currentUrl).then(() => {
+        this.showToast('Website link copied to clipboard!', 'success');
+      });
+    } else {
+      this.showToast('Link: ' + currentUrl, 'info');
     }
   },
 

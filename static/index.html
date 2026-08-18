@@ -35,7 +35,9 @@
           <option value="USD">USD ($)</option>
           <option value="IDR">IDR (Rp)</option>
         </select>
-        <button id="admin-nav-btn" onclick="app.openAdminLoginModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 8px;">🔒 Admin Login</button>
+        <button onclick="app.openShareModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 6px;">🔗 Share</button>
+        <button onclick="app.openQrModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 4px;">📱 Barcode / QR</button>
+        <button id="admin-nav-btn" onclick="app.openAdminLoginModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 4px;">🔒 Admin Login</button>
       </div>
     </div>
   </div>
@@ -749,7 +751,7 @@
         <!-- TAB 6: STUDIO SETTINGS -->
         <div id="admin-tab-settings" class="admin-tab-content" style="display: none;">
           <div class="selectable-card" style="max-width: 680px;">
-            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">✦ Pengaturan Nama Brand & Studio Identity</h3>
+            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">✦ Pengaturan Nama Brand, Footer & Media Sosial</h3>
             <form onsubmit="adminDashboard.saveSettings(event)" class="form-grid">
               
               <div class="form-group">
@@ -770,6 +772,30 @@
               <div class="form-group" style="grid-column: 1 / -1;">
                 <label class="form-label">Nama Fotografer Utama / Owner</label>
                 <input type="text" id="setting-lead-photog" class="form-input" value="Tariq Al-Madani" placeholder="Nama Anda / Tim Fotografer">
+              </div>
+
+              <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+                <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--gold-hover);">📸 Pengaturan Footer, Instagram & Kontak Studio</h4>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Instagram Username / Link</label>
+                <input type="text" id="setting-instagram" class="form-input" value="@noormadinah.photo" placeholder="@username / https://instagram.com/...">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Email Resmi Studio</label>
+                <input type="email" id="setting-studio-email" class="form-input" value="booking@madinahphotos.com" placeholder="email@domain.com">
+              </div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Alamat / Lokasi Studio di Madinah (Footer)</label>
+                <input type="text" id="setting-studio-address" class="form-input" value="King Fahd Road, Central Area, Al-Madinah Al-Munawwarah, KSA">
+              </div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Deskripsi / Bio Studio di Footer</label>
+                <textarea id="setting-footer-desc" class="form-textarea">Preserving sacred memories, pilgrimages, and heartfelt milestones in the Radiant City of Madinah with timeless editorial craftsmanship.</textarea>
               </div>
 
               <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
@@ -803,6 +829,11 @@
 
               <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
                 <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--gold-hover);">⚙️ Pengaturan Operasional & WhatsApp</h4>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Official Studio WhatsApp (Penerima Booking)</label>
+                <input type="text" id="setting-whatsapp-num" class="form-input" value="+966541234567" placeholder="+628... / +9665...">
               </div>
 
               <div class="form-group">
@@ -854,51 +885,69 @@
 
   <!-- FOOTER -->
   <footer class="site-footer">
-    <div class="container footer-grid">
-      <div>
-        <div class="brand-title" style="color: #fff; font-size: 1.4rem; margin-bottom: 6px;">NOOR MADINAH</div>
-        <div class="brand-subtitle" style="margin-bottom: 16px;">Fine Art Photography</div>
-        <p style="color: rgba(255,255,255,0.7); font-size: 0.88rem; line-height: 1.7; max-width: 340px;">
-          Preserving sacred memories, pilgrimages, and heartfelt milestones in the Radiant City of Madinah with timeless editorial craftsmanship.
-        </p>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4 class="footer-col-title brand-title" id="footer-brand-title">NOOR MADINAH</h4>
+          <span class="brand-subtitle" id="footer-brand-tagline" style="display: block; margin-bottom: 12px;">FINE ART PHOTOGRAPHY</span>
+          <p id="footer-bio-desc" style="font-size: 0.84rem; color: rgba(255, 255, 255, 0.7); line-height: 1.6; margin-bottom: 16px;">
+            Preserving sacred memories, pilgrimages, and heartfelt milestones in the Radiant City of Madinah with timeless editorial craftsmanship.
+          </p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a id="footer-ig-btn" href="https://instagram.com/noormadinah.photo" target="_blank" class="btn btn-dark btn-sm" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #fff; border: none;">
+              📸 Instagram
+            </a>
+            <button onclick="app.openQrModal()" class="btn btn-dark btn-sm" style="background: rgba(197, 168, 128, 0.2); color: var(--gold-light);">
+              📱 Barcode / QR
+            </button>
+            <button onclick="app.openShareModal()" class="btn btn-dark btn-sm">
+              🔗 Share Link
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Experiences</h4>
+          <ul class="footer-links-list">
+            <li><a onclick="app.startBooking(1)" class="footer-link">Solo Portraits</a></li>
+            <li><a onclick="app.startBooking(2)" class="footer-link">Couple & Honeymoon</a></li>
+            <li><a onclick="app.startBooking(3)" class="footer-link">Family Pilgrimage</a></li>
+            <li><a onclick="app.startBooking(5)" class="footer-link">Golden Hour Session</a></li>
+            <li><a onclick="app.startBooking(6)" class="footer-link">Private City Tour</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Locations</h4>
+          <ul class="footer-links-list">
+            <li><a onclick="app.scrollToSection('section-locations')" class="footer-link">Masjid Nabawi</a></li>
+            <li><a onclick="app.scrollToSection('section-locations')" class="footer-link">Mount Uhud</a></li>
+            <li><a onclick="app.scrollToSection('section-locations')" class="footer-link">Quba Date Palm Oasis</a></li>
+            <li><a onclick="app.scrollToSection('section-locations')" class="footer-link">Old Madinah Heritage</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Madinah Studio</h4>
+          <p id="footer-address-text" style="font-size: 0.84rem; color: rgba(255, 255, 255, 0.7); line-height: 1.5; margin-bottom: 10px;">
+            📍 King Fahd Road, Central Area, Al-Madinah Al-Munawwarah, KSA
+          </p>
+          <p id="footer-email-text" style="font-size: 0.84rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">
+            ✉️ <span id="footer-email-val">booking@madinahphotos.com</span>
+          </p>
+          <p style="font-size: 0.84rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 16px;">
+            💬 WhatsApp: <span id="footer-whatsapp-val">+966 54 123 4567</span>
+          </p>
+          <a id="footer-whatsapp-btn" href="https://wa.me/966541234567" target="_blank" class="btn btn-primary btn-sm" style="width: 100%;">
+            Contact on WhatsApp
+          </a>
+        </div>
       </div>
 
-      <div>
-        <h4 class="footer-col-title">Experiences</h4>
-        <ul class="footer-links-list">
-          <li><a class="footer-link" onclick="app.startBooking()">Solo Portraits</a></li>
-          <li><a class="footer-link" onclick="app.startBooking()">Couple & Honeymoon</a></li>
-          <li><a class="footer-link" onclick="app.startBooking()">Family Pilgrimage</a></li>
-          <li><a class="footer-link" onclick="app.startBooking()">Golden Hour Session</a></li>
-          <li><a class="footer-link" onclick="app.startBooking()">Private City Tour</a></li>
-        </ul>
+      <div class="footer-bottom-row">
+        <span id="footer-copyright-text">© 2026 NOOR MADINAH PHOTOGRAPHY. All rights reserved.</span>
+        <span>Asia/Riyadh Standard Time (UTC+3) • Ministry of Tourism Licensed</span>
       </div>
-
-      <div>
-        <h4 class="footer-col-title">Locations</h4>
-        <ul class="footer-links-list">
-          <li><a class="footer-link" onclick="app.scrollToSection('locations')">Masjid Nabawi</a></li>
-          <li><a class="footer-link" onclick="app.scrollToSection('locations')">Mount Uhud</a></li>
-          <li><a class="footer-link" onclick="app.scrollToSection('locations')">Quba Date Palm Oasis</a></li>
-          <li><a class="footer-link" onclick="app.scrollToSection('locations')">Old Madinah Heritage</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h4 class="footer-col-title">Madinah Studio</h4>
-        <p style="color: rgba(255,255,255,0.7); font-size: 0.88rem; margin-bottom: 12px;">
-          📍 King Fahd Road, Central Area, Al-Madinah Al-Munawwarah, KSA
-        </p>
-        <p style="color: rgba(255,255,255,0.7); font-size: 0.88rem; margin-bottom: 16px;">
-          💬 WhatsApp: +966 54 123 4567
-        </p>
-        <a href="https://wa.me/966541234567" target="_blank" class="btn btn-primary btn-sm" style="color: #141312;">Contact on WhatsApp</a>
-      </div>
-    </div>
-
-    <div class="container footer-bottom-row">
-      <span>© 2026 NOOR MADINAH PHOTOGRAPHY. All rights reserved.</span>
-      <span>Asia/Riyadh Standard Time (UTC+3) • Ministry of Tourism Licensed</span>
     </div>
   </footer>
 

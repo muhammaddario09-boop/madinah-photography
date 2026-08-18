@@ -349,6 +349,11 @@ const adminDashboard = {
     if (saved.heroTitle && document.getElementById('setting-hero-title')) document.getElementById('setting-hero-title').value = saved.heroTitle;
     if (saved.leadPhotog && document.getElementById('setting-lead-photog')) document.getElementById('setting-lead-photog').value = saved.leadPhotog;
 
+    if (saved.instagram && document.getElementById('setting-instagram')) document.getElementById('setting-instagram').value = saved.instagram;
+    if (saved.studioEmail && document.getElementById('setting-studio-email')) document.getElementById('setting-studio-email').value = saved.studioEmail;
+    if (saved.studioAddress && document.getElementById('setting-studio-address')) document.getElementById('setting-studio-address').value = saved.studioAddress;
+    if (saved.footerBio && document.getElementById('setting-footer-desc')) document.getElementById('setting-footer-desc').value = saved.footerBio;
+
     if (saved.startTime && document.getElementById('setting-start-time')) document.getElementById('setting-start-time').value = saved.startTime;
     if (saved.endTime && document.getElementById('setting-end-time')) document.getElementById('setting-end-time').value = saved.endTime;
     if (saved.slotInterval && document.getElementById('setting-slot-interval')) document.getElementById('setting-slot-interval').value = saved.slotInterval;
@@ -368,6 +373,11 @@ const adminDashboard = {
       brandTagline: document.getElementById('setting-brand-tagline').value.trim(),
       heroTitle: document.getElementById('setting-hero-title').value.trim(),
       leadPhotog: document.getElementById('setting-lead-photog').value.trim(),
+
+      instagram: document.getElementById('setting-instagram') ? document.getElementById('setting-instagram').value.trim() : '@noormadinah.photo',
+      studioEmail: document.getElementById('setting-studio-email') ? document.getElementById('setting-studio-email').value.trim() : 'booking@madinahphotos.com',
+      studioAddress: document.getElementById('setting-studio-address') ? document.getElementById('setting-studio-address').value.trim() : 'Madinah, KSA',
+      footerBio: document.getElementById('setting-footer-desc') ? document.getElementById('setting-footer-desc').value.trim() : '',
 
       startTime: document.getElementById('setting-start-time').value,
       endTime: document.getElementById('setting-end-time').value,
@@ -393,7 +403,7 @@ const adminDashboard = {
       body: JSON.stringify(settings)
     }).catch(() => {});
 
-    app.showToast('Jam aktif pemotretan & pengaturan studio berhasil disimpan!', 'success');
+    app.showToast('Semua pengaturan Brand, Footer, Instagram & Jam kerja berhasil disimpan!', 'success');
   },
 
   openBookingDrawer(bookingId) {
