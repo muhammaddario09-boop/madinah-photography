@@ -35,7 +35,7 @@
           <option value="USD">USD ($)</option>
           <option value="IDR">IDR (Rp)</option>
         </select>
-        <button onclick="app.switchView('admin')" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 8px;">Admin Portal</button>
+        <button id="admin-nav-btn" onclick="app.openAdminLoginModal()" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 8px;">🔒 Admin Login</button>
       </div>
     </div>
   </div>
@@ -659,11 +659,11 @@
         <!-- TAB 4: PORTFOLIO CMS -->
         <div id="admin-tab-portfolio" class="admin-tab-content" style="display: none;">
           <div class="selectable-card" style="margin-bottom: 24px;">
-            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">Add New Portfolio Showcase</h3>
+            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">✦ Add New Photo to Gallery</h3>
             <form onsubmit="adminDashboard.addPortfolioItem(event)" class="form-grid">
               <div class="form-group">
-                <label class="form-label">Title *</label>
-                <input type="text" id="cms-port-title" class="form-input" placeholder="e.g. Golden Hour at Nabawi Courtyard" required>
+                <label class="form-label">Photo Title *</label>
+                <input type="text" id="cms-port-title" class="form-input" placeholder="e.g. Sunset Minaret Reflection" required>
               </div>
               <div class="form-group">
                 <label class="form-label">Category *</label>
@@ -677,15 +677,19 @@
                 </select>
               </div>
               <div class="form-group">
-                <label class="form-label">Image URL / Path *</label>
-                <input type="text" id="cms-port-img" class="form-input" value="/static/images/hero_sunset.jpg" required>
+                <label class="form-label">Select Photo File from Device *</label>
+                <input type="file" id="cms-port-file" class="form-input" accept="image/*" onchange="adminDashboard.previewPortfolioUpload(event)" required>
               </div>
               <div class="form-group">
                 <label class="form-label">Location Tag</label>
                 <input type="text" id="cms-port-loc" class="form-input" value="Masjid Nabawi Perimeter">
               </div>
+              <div id="cms-port-preview-wrap" style="grid-column: 1 / -1; display: none; margin: 10px 0;">
+                <label class="form-label" style="margin-bottom: 6px;">Image Preview:</label>
+                <img id="cms-port-preview-img" src="" alt="Preview" style="max-height: 200px; border-radius: var(--radius-md); border: 2px solid var(--gold-border); object-fit: cover;">
+              </div>
               <div style="grid-column: 1 / -1;">
-                <button type="submit" class="btn btn-primary btn-sm">Add to Gallery</button>
+                <button type="submit" class="btn btn-primary btn-sm">Upload & Publish to Gallery</button>
               </div>
             </form>
           </div>
@@ -708,26 +712,39 @@
         <!-- TAB 6: STUDIO SETTINGS -->
         <div id="admin-tab-settings" class="admin-tab-content" style="display: none;">
           <div class="selectable-card" style="max-width: 680px;">
-            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">Booking & Operational Rules</h3>
+            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">✦ Studio Operational Rules & Security</h3>
             <form onsubmit="adminDashboard.saveSettings(event)" class="form-grid">
               <div class="form-group">
-                <label class="form-label">Minimum Notice Period (Hours)</label>
-                <input type="number" id="setting-notice-hours" class="form-input" value="6">
+                <label class="form-label">Official Studio WhatsApp Line (Receives Bookings)</label>
+                <input type="text" id="setting-whatsapp-num" class="form-input" value="+966541234567" placeholder="+628... / +9665...">
               </div>
               <div class="form-group">
                 <label class="form-label">Default Travel Buffer Time (Minutes)</label>
                 <input type="number" id="setting-buffer-min" class="form-input" value="30">
               </div>
               <div class="form-group">
+                <label class="form-label">Minimum Notice Period (Hours)</label>
+                <input type="number" id="setting-notice-hours" class="form-input" value="6">
+              </div>
+              <div class="form-group">
                 <label class="form-label">Cancellation Deadline (Hours)</label>
                 <input type="number" id="setting-cancellation-hours" class="form-input" value="48">
               </div>
-              <div class="form-group">
-                <label class="form-label">Official Studio WhatsApp</label>
-                <input type="text" id="setting-whatsapp-num" class="form-input" value="+966541234567">
+
+              <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+                <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--gold-hover);">🔒 Admin Security Credentials</h4>
               </div>
-              <div style="grid-column: 1 / -1;">
-                <button type="submit" class="btn btn-primary btn-sm">Save Studio Rules</button>
+              <div class="form-group">
+                <label class="form-label">Admin Username</label>
+                <input type="text" id="setting-admin-user" class="form-input" value="admin" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Admin Password</label>
+                <input type="text" id="setting-admin-pass" class="form-input" value="madinah2026" required>
+              </div>
+
+              <div style="grid-column: 1 / -1; margin-top: 10px;">
+                <button type="submit" class="btn btn-primary btn-sm">Save All Settings & Password</button>
               </div>
             </form>
           </div>

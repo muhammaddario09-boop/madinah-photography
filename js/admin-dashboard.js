@@ -1,6 +1,6 @@
 /**
- * NOOR MADINAH PHOTOGRAPHY — ADMIN CONTROL CENTER (PRODUCTION READY)
- * Real-time KPI, Visual Calendar, Bookings Manager & Studio Rules Customizer
+ * NOOR MADINAH PHOTOGRAPHY — ADMIN DASHBOARD (PRODUCTION & SECURE)
+ * File Upload Support, Password Security, Real-Time Calendar & WhatsApp
  */
 
 const adminDashboard = {
@@ -8,6 +8,7 @@ const adminDashboard = {
   calYear: new Date().getFullYear(),
   calMonth: new Date().getMonth(),
   bookings: [],
+  uploadedBase64Image: null,
 
   init() {
     this.refreshData();
@@ -15,10 +16,8 @@ const adminDashboard = {
   },
 
   refreshData() {
-    // Ambil bookings dari LocalStorage
     let saved = JSON.parse(localStorage.getItem('madinah_bookings') || 'null');
     if (!saved || saved.length === 0) {
-      // Inisialisasi data awal jika kosong
       saved = [
         {
           id: "MDN-2026-0001",
@@ -36,23 +35,6 @@ const adminDashboard = {
           deposit_paid_sar: 255.0,
           status: "CONFIRMED",
           payment_method: "Credit Card"
-        },
-        {
-          id: "MDN-2026-0002",
-          client_name: "Dr. Mansoor Khalid",
-          client_whatsapp: "+971 50 123 9988",
-          client_country: "UAE",
-          service_title: "Family & Pilgrimage Gathering",
-          package_name: "Signature Family",
-          photographer_name: "Zainab Hashim",
-          location_name: "Mount Uhud & Archers' Hill",
-          booking_date: `${this.calYear}-08-26`,
-          start_time: "09:00",
-          end_time: "10:15",
-          total_price_sar: 750.0,
-          deposit_paid_sar: 750.0,
-          status: "CONFIRMED",
-          payment_method: "Apple Pay"
         }
       ];
       localStorage.setItem('madinah_bookings', JSON.stringify(saved));
@@ -198,7 +180,60 @@ const adminDashboard = {
     `).join('');
   },
 
-  // ---------------- TAB 5: WHATSAPP NOTIFICATIONS ---------------- //
+  // ---------------- TAB 4: REAL DEVICE FILE UPLOAD (CMS) ---------------- //
+  previewPortfolioUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.uploadedBase64Image = e.target.result;
+      const previewWrap = document.getElementById('cms-port-preview-wrap');
+      const previewImg = document.getElementById('cms-port-preview-img');
+      if (previewWrap && previewImg) {
+        previewImg.src = this.uploadedBase64Image;
+        previewWrap.style.display = 'block';
+      }
+    };
+    reader.readAsDataURL(file);
+  },
+
+  addPortfolioItem(e) {
+    e.preventDefault();
+    if (!this.uploadedBase64Image) {
+      app.showToast('Please select a photo file from your device.', 'error');
+      return;
+    }
+
+    const title = document.getElementById('cms-port-title').value;
+    const category = document.getElementById('cms-port-cat').value;
+    const locationTag = document.getElementById('cms-port-loc').value || 'Madinah';
+
+    const newItem = {
+      id: Date.now(),
+      title: title,
+      category: category,
+      image_url: this.uploadedBase64Image,
+      location_tag: locationTag,
+      photographer_name: "Noor Madinah Lead Artist"
+    };
+
+    // Prepend to Portfolio
+    app.portfolio.unshift(newItem);
+    app.renderPortfolio(app.portfolio);
+
+    // Save custom items to LocalStorage
+    const customItems = JSON.parse(localStorage.getItem('madinah_custom_portfolio') || '[]');
+    customItems.unshift(newItem);
+    localStorage.setItem('madinah_custom_portfolio', JSON.stringify(customItems));
+
+    app.showToast('Photo successfully uploaded to gallery!', 'success');
+    e.target.reset();
+    document.getElementById('cms-port-preview-wrap').style.display = 'none';
+    this.uploadedBase64Image = null;
+  },
+
+  // ---------------- TAB 5: WHATSAPP DISPATCH ---------------- //
   renderWhatsAppTab() {
     const container = document.getElementById('admin-whatsapp-templates-list');
     if (!container) return;
@@ -220,21 +255,20 @@ const adminDashboard = {
           <a href="https://wa.me/${b.client_whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`🕊️ NOOR MADINAH: Reminder for ${b.client_name}. Your session #${b.id} is tomorrow, ${b.booking_date} at ${b.start_time} (${b.location_name}). See you soon!`)}" target="_blank" class="btn btn-secondary btn-sm">
             ⏰ Send 24h Reminder
           </a>
-          <a href="https://wa.me/${b.client_whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`📸 NOOR MADINAH: Your photos for session #${b.id} are ready for download! View your gallery here.`)}" target="_blank" class="btn btn-secondary btn-sm">
-            🖼️ Send Gallery Delivery Link
-          </a>
         </div>
       </div>
     `).join('');
   },
 
-  // ---------------- TAB 6: SETTINGS CUSTOMIZATION ---------------- //
+  // ---------------- TAB 6: SETTINGS & PASSWORD ---------------- //
   renderSettingsTab() {
     const saved = JSON.parse(localStorage.getItem('madinah_studio_settings') || '{}');
     if (saved.whatsapp) document.getElementById('setting-whatsapp-num').value = saved.whatsapp;
     if (saved.notice) document.getElementById('setting-notice-hours').value = saved.notice;
     if (saved.buffer) document.getElementById('setting-buffer-min').value = saved.buffer;
     if (saved.cancellation) document.getElementById('setting-cancellation-hours').value = saved.cancellation;
+    if (saved.adminUser) document.getElementById('setting-admin-user').value = saved.adminUser;
+    if (saved.adminPass) document.getElementById('setting-admin-pass').value = saved.adminPass;
   },
 
   saveSettings(e) {
@@ -243,14 +277,15 @@ const adminDashboard = {
       whatsapp: document.getElementById('setting-whatsapp-num').value,
       notice: document.getElementById('setting-notice-hours').value,
       buffer: document.getElementById('setting-buffer-min').value,
-      cancellation: document.getElementById('setting-cancellation-hours').value
+      cancellation: document.getElementById('setting-cancellation-hours').value,
+      adminUser: document.getElementById('setting-admin-user').value.trim(),
+      adminPass: document.getElementById('setting-admin-pass').value.trim()
     };
     localStorage.setItem('madinah_studio_settings', JSON.stringify(settings));
     app.ownerWhatsApp = settings.whatsapp;
-    app.showToast('Studio settings & WhatsApp line saved successfully!', 'success');
+    app.showToast('Studio settings & Admin password saved successfully!', 'success');
   },
 
-  // ---------------- ACTIONS ---------------- //
   openBookingDrawer(bookingId) {
     const b = this.bookings.find(x => x.id === bookingId);
     if (!b) return;
@@ -271,7 +306,6 @@ const adminDashboard = {
           <div class="receipt-row"><span class="receipt-label">Date & Time</span><span class="receipt-value">📅 ${b.booking_date} (${b.start_time} - ${b.end_time})</span></div>
           <div class="receipt-row"><span class="receipt-label">Photographer</span><span class="receipt-value">👤 ${b.photographer_name}</span></div>
           <div class="receipt-row"><span class="receipt-label">Location</span><span class="receipt-value">📍 ${b.location_name}</span></div>
-          <div class="receipt-row"><span class="receipt-label">Package</span><span class="receipt-value">📸 ${b.service_title} — ${b.package_name}</span></div>
           <div class="receipt-row"><span class="receipt-label">Total Price</span><span class="receipt-value">SAR ${b.total_price_sar}</span></div>
           <div class="receipt-row"><span class="receipt-label">Deposit Paid</span><span class="receipt-value" style="color: var(--status-confirmed);">SAR ${b.deposit_paid_sar}</span></div>
         </div>
