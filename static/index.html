@@ -749,39 +749,69 @@
         <!-- TAB 6: STUDIO SETTINGS -->
         <div id="admin-tab-settings" class="admin-tab-content" style="display: none;">
           <div class="selectable-card" style="max-width: 680px;">
-            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">✦ Studio Operational Rules & Security</h3>
+            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">✦ Pengaturan Nama Brand & Studio Identity</h3>
             <form onsubmit="adminDashboard.saveSettings(event)" class="form-grid">
+              
               <div class="form-group">
-                <label class="form-label">Official Studio WhatsApp Line (Receives Bookings)</label>
+                <label class="form-label">Nama Brand / Studio Website</label>
+                <input type="text" id="setting-brand-name" class="form-input" value="NOOR MADINAH" placeholder="Contoh: NOOR MADINAH / DARIO PHOTOGRAPHY" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Tagline Brand / Slogan</label>
+                <input type="text" id="setting-brand-tagline" class="form-input" value="FINE ART PHOTOGRAPHY" placeholder="Contoh: FINE ART PHOTOGRAPHY">
+              </div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Judul Utama Hero Banner (Halaman Depan)</label>
+                <input type="text" id="setting-hero-title" class="form-input" value="CAPTURE YOUR MADINAH MOMENTS">
+              </div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Nama Fotografer Utama / Owner</label>
+                <input type="text" id="setting-lead-photog" class="form-input" value="Tariq Al-Madani" placeholder="Nama Anda / Tim Fotografer">
+              </div>
+
+              <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+                <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--gold-hover);">⚙️ Pengaturan Operasional & WhatsApp</h4>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Official Studio WhatsApp (Penerima Booking)</label>
                 <input type="text" id="setting-whatsapp-num" class="form-input" value="+966541234567" placeholder="+628... / +9665...">
               </div>
+
               <div class="form-group">
-                <label class="form-label">Default Travel Buffer Time (Minutes)</label>
+                <label class="form-label">Default Travel Buffer Time (Menit)</label>
                 <input type="number" id="setting-buffer-min" class="form-input" value="30">
               </div>
+
               <div class="form-group">
-                <label class="form-label">Minimum Notice Period (Hours)</label>
+                <label class="form-label">Minimum Notice Period (Jam)</label>
                 <input type="number" id="setting-notice-hours" class="form-input" value="6">
               </div>
+
               <div class="form-group">
-                <label class="form-label">Cancellation Deadline (Hours)</label>
+                <label class="form-label">Batas Waktu Pembatalan (Jam)</label>
                 <input type="number" id="setting-cancellation-hours" class="form-input" value="48">
               </div>
 
               <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
-                <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--gold-hover);">🔒 Admin Security Credentials</h4>
+                <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--gold-hover);">🔒 Akun Login Admin (Username & Password)</h4>
               </div>
+
               <div class="form-group">
                 <label class="form-label">Admin Username</label>
                 <input type="text" id="setting-admin-user" class="form-input" value="admin" required>
               </div>
+
               <div class="form-group">
                 <label class="form-label">Admin Password</label>
                 <input type="text" id="setting-admin-pass" class="form-input" value="madinah2026" required>
               </div>
 
               <div style="grid-column: 1 / -1; margin-top: 10px;">
-                <button type="submit" class="btn btn-primary btn-sm">Save All Settings & Password</button>
+                <button type="submit" class="btn btn-primary btn-sm">💾 Simpan Semua Nama & Pengaturan</button>
               </div>
             </form>
           </div>

@@ -131,6 +131,33 @@ const app = {
       try {
         const parsed = JSON.parse(saved);
         if (parsed.whatsapp) this.ownerWhatsApp = parsed.whatsapp;
+
+        // Apply Custom Brand Name
+        if (parsed.brandName) {
+          const brandEl = document.querySelector('.brand-title');
+          if (brandEl) brandEl.textContent = parsed.brandName;
+          const footerBrand = document.querySelector('.footer-col-title');
+          if (footerBrand) footerBrand.textContent = parsed.brandName;
+          document.title = `${parsed.brandName} — Luxury Photography in Madinah`;
+        }
+
+        // Apply Custom Tagline
+        if (parsed.brandTagline) {
+          const tagEl = document.querySelector('.brand-subtitle');
+          if (tagEl) tagEl.textContent = parsed.brandTagline;
+        }
+
+        // Apply Custom Hero Title
+        if (parsed.heroTitle) {
+          const heroEl = document.querySelector('.hero-title');
+          if (heroEl) heroEl.textContent = parsed.heroTitle;
+        }
+
+        // Apply Custom Lead Photographer
+        if (parsed.leadPhotog && this.photographers.length > 0) {
+          this.photographers[0].name = parsed.leadPhotog;
+          this.photographers[0].title = "Lead Studio Photographer & Owner";
+        }
       } catch (e) {}
     }
   },

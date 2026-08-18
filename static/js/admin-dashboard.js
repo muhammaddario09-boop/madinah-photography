@@ -341,9 +341,14 @@ const adminDashboard = {
     `).join('');
   },
 
-  // ---------------- TAB 6: SETTINGS & PASSWORD ---------------- //
+  // ---------------- TAB 6: SETTINGS & BRAND NAME ---------------- //
   renderSettingsTab() {
     const saved = JSON.parse(localStorage.getItem('madinah_studio_settings') || '{}');
+    if (saved.brandName && document.getElementById('setting-brand-name')) document.getElementById('setting-brand-name').value = saved.brandName;
+    if (saved.brandTagline && document.getElementById('setting-brand-tagline')) document.getElementById('setting-brand-tagline').value = saved.brandTagline;
+    if (saved.heroTitle && document.getElementById('setting-hero-title')) document.getElementById('setting-hero-title').value = saved.heroTitle;
+    if (saved.leadPhotog && document.getElementById('setting-lead-photog')) document.getElementById('setting-lead-photog').value = saved.leadPhotog;
+
     if (saved.whatsapp) document.getElementById('setting-whatsapp-num').value = saved.whatsapp;
     if (saved.notice) document.getElementById('setting-notice-hours').value = saved.notice;
     if (saved.buffer) document.getElementById('setting-buffer-min').value = saved.buffer;
@@ -355,16 +360,32 @@ const adminDashboard = {
   saveSettings(e) {
     e.preventDefault();
     const settings = {
-      whatsapp: document.getElementById('setting-whatsapp-num').value,
+      brandName: document.getElementById('setting-brand-name').value.trim(),
+      brandTagline: document.getElementById('setting-brand-tagline').value.trim(),
+      heroTitle: document.getElementById('setting-hero-title').value.trim(),
+      leadPhotog: document.getElementById('setting-lead-photog').value.trim(),
+
+      whatsapp: document.getElementById('setting-whatsapp-num').value.trim(),
       notice: document.getElementById('setting-notice-hours').value,
       buffer: document.getElementById('setting-buffer-min').value,
       cancellation: document.getElementById('setting-cancellation-hours').value,
       adminUser: document.getElementById('setting-admin-user').value.trim(),
       adminPass: document.getElementById('setting-admin-pass').value.trim()
     };
+    
     localStorage.setItem('madinah_studio_settings', JSON.stringify(settings));
     app.ownerWhatsApp = settings.whatsapp;
-    app.showToast('Studio settings & Admin password saved successfully!', 'success');
+    app.loadCustomizedSettings();
+    app.renderPhotographers(app.photographers);
+
+    // Send to backend API
+    fetch('/api/admin/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings)
+    }).catch(() => {});
+
+    app.showToast('Semua nama brand, fotografer & pengaturan berhasil disimpan!', 'success');
   },
 
   openBookingDrawer(bookingId) {
