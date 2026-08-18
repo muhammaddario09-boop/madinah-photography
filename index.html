@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOOR MADINAH — Luxury Editorial Photography & Reservation Platform</title>
+  
+  <!-- SEO & Open Graph -->
+  <meta name="description" content="Exclusive luxury photography experiences in Madinah, Saudi Arabia. Commemorate sacred Umrah moments, timeless portraits, and family heirlooms around Prophet's Mosque & Mount Uhud.">
+  <meta name="keywords" content="Madinah Photographer, Photographer in Madinah, Umrah Photography, Madinah Photo Session, Saudi Arabia Luxury Photographer, Nabawi Portrait">
+  <meta property="og:title" content="NOOR MADINAH — Luxury Editorial Photography">
+  <meta property="og:description" content="Capture your most meaningful pilgrimage moments in Madinah with our premier editorial photography team.">
+  <meta property="og:image" content="/static/images/hero_sunset.jpg">
+  <meta property="og:type" content="website">
+
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <!-- 1. TOP LIVE TIME & CURRENCY BAR -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <div class="time-badge">
+          <span class="pulse-dot"></span>
+          <span id="madinah-live-clock">Madinah (Asia/Riyadh): 17:30</span>
+        </div>
+        <span style="color: rgba(255,255,255,0.4);">|</span>
+        <span style="font-size: 0.78rem; color: rgba(255,255,255,0.8);">📍 Al-Madinah Al-Munawwarah, Kingdom of Saudi Arabia</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 0.75rem; color: var(--gold-light);">Currency:</span>
+        <select id="currency-select" class="currency-picker" onchange="app.setCurrency(this.value)">
+          <option value="SAR">SAR (ر.س)</option>
+          <option value="USD">USD ($)</option>
+          <option value="IDR">IDR (Rp)</option>
+        </select>
+        <button onclick="app.switchView('admin')" class="btn btn-dark btn-sm" style="font-size: 0.72rem; padding: 3px 10px; margin-left: 8px;">Admin Portal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SITE HEADER & NAVIGATION -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="#" onclick="app.switchView('public'); return false;" class="brand-logo">
+        <span class="brand-title">NOOR MADINAH</span>
+        <span class="brand-subtitle">Fine Art Photography</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a class="nav-link active" onclick="app.scrollToSection('hero')">Home</a></li>
+          <li><a class="nav-link" onclick="app.scrollToSection('portfolio')">Portfolio</a></li>
+          <li><a class="nav-link" onclick="app.scrollToSection('services')">Services & Packages</a></li>
+          <li><a class="nav-link" onclick="app.scrollToSection('locations')">Locations</a></li>
+          <li><a class="nav-link" onclick="app.scrollToSection('photographers')">Artists</a></li>
+          <li><a class="nav-link" onclick="app.scrollToSection('faq')">FAQ</a></li>
+          <li><a class="nav-link" onclick="app.switchView('client-portal')">My Booking</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button onclick="app.startBooking()" class="btn btn-primary">Reserve Session</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       MAIN APP CONTAINER (SPA ROUTER)
+       ======================================================== -->
+  <main id="app-root">
+
+    <!-- VIEW 1: PUBLIC EDITORIAL WEBSITE -->
+    <div id="view-public">
+
+      <!-- HERO SECTION -->
+      <section id="hero" class="hero-section">
+        <img src="/static/images/hero_sunset.jpg" alt="Madinah Sanctuary Sunset" class="hero-bg-img">
+        <div class="hero-overlay"></div>
+        
+        <div class="container hero-content">
+          <div class="hero-tag">✦ Exclusive Madinah Photography ✦</div>
+          <h1 class="hero-title">CAPTURE YOUR<br>MADINAH MOMENTS</h1>
+          <p class="hero-subtitle">
+            Luxury editorial photography experiences crafted to preserve your most meaningful spiritual milestones, sacred memories, and family bonds in the blessed city of the Prophet ﷺ.
+          </p>
+          <div class="hero-cta-group">
+            <button onclick="app.startBooking()" class="btn btn-primary btn-lg">Book A Session</button>
+            <button onclick="app.scrollToSection('portfolio')" class="btn btn-secondary btn-lg" style="background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.3);">View Portfolio</button>
+          </div>
+
+          <div class="hero-badges-row">
+            <div class="hero-badge-item">
+              <span style="color: var(--gold-hover); font-size: 1.1rem;">★</span>
+              <span>4.9/5 Rating (500+ Pilgrims & VIPs)</span>
+            </div>
+            <div class="hero-badge-item">
+              <span style="color: var(--gold-hover); font-size: 1.1rem;">⏱️</span>
+              <span>48-Hour Priority Digital Gallery</span>
+            </div>
+            <div class="hero-badge-item">
+              <span style="color: var(--gold-hover); font-size: 1.1rem;">🕌</span>
+              <span>Licensed Local Madinah Photographers</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS RIBBON -->
+      <div class="stats-ribbon">
+        <div class="container stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">1,400+</div>
+            <div class="stat-label">Sacred Sessions Documented</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Guaranteed Slot Availability</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">48h</div>
+            <div class="stat-label">Turnaround Before Departure</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">30m</div>
+            <div class="stat-label">Seamless Travel Buffer</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PORTFOLIO SHOWCASE -->
+      <section id="portfolio" class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-subtitle">Visual Storytelling</span>
+            <h2 class="section-title">The Madinah Editorial Collection</h2>
+            <p class="section-description">A curated gallery of genuine emotion, architectural majesty, and golden light captured across historical sanctuaries.</p>
+          </div>
+
+          <div class="portfolio-filter" id="portfolio-category-filters">
+            <button class="filter-btn active" onclick="app.filterPortfolio('All')">All Works</button>
+            <button class="filter-btn" onclick="app.filterPortfolio('Umrah Memories')">Umrah Memories</button>
+            <button class="filter-btn" onclick="app.filterPortfolio('Portrait')">Solo Portraits</button>
+            <button class="filter-btn" onclick="app.filterPortfolio('Couple')">Couple & Honeymoon</button>
+            <button class="filter-btn" onclick="app.filterPortfolio('Family')">Family Gatherings</button>
+            <button class="filter-btn" onclick="app.filterPortfolio('Golden Hour')">Golden Hour</button>
+            <button class="filter-btn" onclick="app.filterPortfolio('Heritage')">Madinah Heritage</button>
+          </div>
+
+          <div class="portfolio-grid" id="portfolio-grid-container">
+            <!-- Dynamic Portfolio Items Rendered Here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVICES & PACKAGES -->
+      <section id="services" class="section section-alt">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-subtitle">Experiences & Pricing</span>
+            <h2 class="section-title">Photography Collections</h2>
+            <p class="section-description">Every collection includes private creative direction, outfit styling consultation, and master color grading.</p>
+          </div>
+
+          <div class="services-grid" id="services-grid-container">
+            <!-- Dynamic Services & Package Cards Rendered Here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ICONIC LOCATIONS -->
+      <section id="locations" class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-subtitle">Iconic Vantage Points</span>
+            <h2 class="section-title">Vantage Points & Sanctuaries</h2>
+            <p class="section-description">We navigate Madinah's crowd timings and permissions to guide you to tranquil, breathtaking backdrops.</p>
+          </div>
+
+          <div class="locations-grid" id="locations-grid-container">
+            <!-- Dynamic Locations Cards Rendered Here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ARTISTS / PHOTOGRAPHERS -->
+      <section id="photographers" class="section section-alt">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-subtitle">Master Artists</span>
+            <h2 class="section-title">Meet Your Photographers</h2>
+            <p class="section-description">Dedicated visual storytellers with intimate knowledge of Madinah's heritage, lighting angles, and respectful etiquette.</p>
+          </div>
+
+          <div class="photographers-grid" id="photographers-grid-container">
+            <!-- Dynamic Photographers Rendered Here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ SECTION -->
+      <section id="faq" class="section">
+        <div class="container container-narrow">
+          <div class="section-header">
+            <span class="section-subtitle">Common Inquiries</span>
+            <h2 class="section-title">Frequently Asked Questions</h2>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="selectable-card">
+              <h3 style="font-size: 1.15rem; margin-bottom: 8px;">What is the best time for photography in Madinah?</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">
+                Early mornings right after Fajr (05:45 – 07:30) offer serene courtyards with crisp soft light. Late afternoons during Golden Hour (17:15 – 18:45) provide warm golden flares and picturesque twilight skies over the minarets.
+              </p>
+            </div>
+            <div class="selectable-card">
+              <h3 style="font-size: 1.15rem; margin-bottom: 8px;">What should we wear for our session?</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">
+                Modest, elegant attire in solid neutrals (cream, white, sand, olive, black, or soft pastel) harmonizes beautifully with Madinah's limestone architecture. For pilgrims, pristine Ihram or modest Saudi thobes/abayas are recommended.
+              </p>
+            </div>
+            <div class="selectable-card">
+              <h3 style="font-size: 1.15rem; margin-bottom: 8px;">How and when will we receive our photos?</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">
+                All high-resolution edited images are delivered through a private luxury digital download gallery within 48 hours — ensuring you have your memories before your flight home.
+              </p>
+            </div>
+            <div class="selectable-card">
+              <h3 style="font-size: 1.15rem; margin-bottom: 8px;">Can we reschedule if our Umrah flight or schedule changes?</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">
+                Yes! You can reschedule your booking self-service anytime up to 24 hours before your session using your Booking ID in the "My Booking" portal.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA BANNER -->
+      <section class="section" style="background: var(--bg-dark); color: #fff; text-align: center; padding: 80px 0;">
+        <div class="container container-narrow">
+          <span style="color: var(--gold-light); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.16em;">Reserve Your Date</span>
+          <h2 style="font-size: 2.8rem; color: #fff; margin: 12px 0 20px;">Preserve Your Madinah Journey Forever</h2>
+          <p style="color: rgba(255,255,255,0.75); margin-bottom: 36px; font-size: 1.05rem;">Slots during golden hours and Umrah peak seasons fill quickly. Lock your preferred photographer and slot today.</p>
+          <button onclick="app.startBooking()" class="btn btn-primary btn-lg">Begin Reservation</button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- VIEW 2: 8-STEP INTERACTIVE BOOKING ENGINE -->
+    <div id="view-booking" style="display: none;">
+      <div class="container">
+        <div class="booking-wizard-wrapper">
+          
+          <!-- Wizard Progress Indicator -->
+          <div class="wizard-header">
+            <div style="text-align: center; margin-bottom: 24px;">
+              <span style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--gold-light);">Reservation Engine</span>
+              <h2 style="font-size: 1.8rem; color: #fff;" id="wizard-step-title">Step 1: Select Photography Experience</h2>
+            </div>
+
+            <div class="wizard-steps-indicator" id="wizard-steps-indicator">
+              <!-- Dynamically populated step pills (1 to 8) -->
+            </div>
+          </div>
+
+          <div class="wizard-body">
+            
+            <!-- STEP 1: SELECT SERVICE -->
+            <div id="step-pane-1" class="step-pane active">
+              <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Choose Your Photoshoot Experience</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">Select the nature of your photography session in Madinah.</p>
+              <div class="select-grid" id="step1-services-grid"></div>
+            </div>
+
+            <!-- STEP 2: SELECT PACKAGE -->
+            <div id="step-pane-2" class="step-pane">
+              <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Select Package & Inclusions</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">Choose your desired session duration, photo deliverables, and add-ons.</p>
+              <div class="select-grid" id="step2-packages-grid"></div>
+            </div>
+
+            <!-- STEP 3: LOCATION & PHOTOGRAPHER -->
+            <div id="step-pane-3" class="step-pane">
+              <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Location & Artist Preference</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">Select where you wish to shoot and your preferred photographer.</p>
+              
+              <div style="margin-top: 24px;">
+                <label class="form-label" style="margin-bottom: 12px; display: block;">1. Select Photoshoot Location in Madinah:</label>
+                <div class="select-grid" id="step3-locations-grid"></div>
+              </div>
+
+              <div style="margin-top: 36px;">
+                <label class="form-label" style="margin-bottom: 12px; display: block;">2. Select Photographer Preference:</label>
+                <div class="select-grid" id="step3-photographers-grid"></div>
+              </div>
+            </div>
+
+            <!-- STEP 4: DATE & LIVE TIME SLOTS (ASIA/RIYADH) -->
+            <div id="step-pane-4" class="step-pane">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <h3 style="font-size: 1.4rem; margin-bottom: 4px;">Choose Date & Available Slot</h3>
+                  <p style="color: var(--text-secondary); font-size: 0.92rem;">All slots strictly calculated in <strong>Asia/Riyadh</strong> timezone with automated travel buffer protection.</p>
+                </div>
+                <div id="slot-calculation-info" style="font-size: 0.82rem; color: var(--gold-hover); font-weight: 600;"></div>
+              </div>
+
+              <div class="datetime-selector-grid">
+                <!-- Interactive Calendar Widget -->
+                <div class="calendar-picker-box">
+                  <div class="cal-header">
+                    <button class="cal-nav-btn" onclick="bookingWizard.prevMonth()">‹</button>
+                    <div class="cal-month-title" id="cal-month-display">August 2026</div>
+                    <button class="cal-nav-btn" onclick="bookingWizard.nextMonth()">›</button>
+                  </div>
+                  <div class="cal-weekdays">
+                    <span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span><span>SU</span>
+                  </div>
+                  <div class="cal-days-grid" id="cal-days-container"></div>
+                </div>
+
+                <!-- Live Generated Time Slots -->
+                <div class="slots-container">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <span style="font-weight: 700; font-size: 0.96rem;" id="slots-selected-date-label">Available Slots for Selected Date</span>
+                    <span style="font-size: 0.76rem; color: var(--text-muted);" id="slots-count-badge">0 slots</span>
+                  </div>
+
+                  <div class="slots-grid" id="slots-grid-container">
+                    <p style="grid-column: 1/-1; color: var(--text-muted); font-size: 0.88rem; padding: 20px 0;">Please select a date on the calendar.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 5: CLIENT INFORMATION -->
+            <div id="step-pane-5" class="step-pane">
+              <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Lead Client Information</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">We will use these details to dispatch confirmations, WhatsApp reminders, and delivery links.</p>
+
+              <div class="form-grid" style="margin-top: 24px;">
+                <div class="form-group">
+                  <label class="form-label">Full Name *</label>
+                  <input type="text" id="client-name-input" class="form-input" placeholder="e.g. Ahmad Rayyan" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Email Address *</label>
+                  <input type="email" id="client-email-input" class="form-input" placeholder="ahmad@example.com" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">WhatsApp Number (with Country Code) *</label>
+                  <input type="tel" id="client-whatsapp-input" class="form-input" placeholder="+62 812 3456 7890" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Country of Residence *</label>
+                  <select id="client-country-input" class="form-select">
+                    <option value="Indonesia">Indonesia</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="United Arab Emirates">United Arab Emirates</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="United States">United States</option>
+                    <option value="Malaysia">Malaysia</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Other">Other Country</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 6: PHOTOSHOOT DETAILS -->
+            <div id="step-pane-6" class="step-pane">
+              <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Photoshoot Details & Vision</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">Help us tailor the lighting, angles, and storytelling to your vision.</p>
+
+              <div class="form-grid" style="margin-top: 24px;">
+                <div class="form-group">
+                  <label class="form-label">What are you celebrating? *</label>
+                  <select id="detail-celebration-input" class="form-select">
+                    <option value="Umrah Pilgrimage">Umrah Pilgrimage</option>
+                    <option value="Wedding Anniversary">Wedding Anniversary</option>
+                    <option value="Honeymoon">Honeymoon</option>
+                    <option value="Family Gathering">Family Gathering</option>
+                    <option value="Personal Milestone / Solo">Personal Milestone / Solo</option>
+                    <option value="Birthday / Celebration">Birthday / Celebration</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Number of People in Session *</label>
+                  <select id="detail-people-input" class="form-select">
+                    <option value="1">1 Person (Solo)</option>
+                    <option value="2">2 Persons (Couple)</option>
+                    <option value="3">3 - 4 Persons (Small Family)</option>
+                    <option value="6">5 - 7 Persons (Medium Group)</option>
+                    <option value="10">8+ Persons (Large Family)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Preferred Photography Style *</label>
+                  <select id="detail-style-input" class="form-select">
+                    <option value="Editorial Fine-Art">Editorial Fine-Art (Magazine Look)</option>
+                    <option value="Natural & Candid">Natural & Candid (Unposed Emotive)</option>
+                    <option value="Cinematic Warmth">Cinematic Warmth (Dramatic Lighting)</option>
+                    <option value="Traditional & Classic">Traditional & Classic</option>
+                  </select>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label class="form-label">Special Requests, Meeting Notes, or Preferred Poses</label>
+                  <textarea id="detail-notes-input" class="form-textarea" placeholder="e.g. Traveling with elderly parents, prefer elevator access, would like photos near green dome minarets, etc."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 7: PAYMENT & DEPOSIT -->
+            <div id="step-pane-7" class="step-pane">
+              <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Payment & Deposit Confirmation</h3>
+              <p style="color: var(--text-secondary); font-size: 0.92rem;">To lock your photographer's schedule, a 30% deposit is required.</p>
+
+              <div class="receipt-box" id="step7-pricing-summary">
+                <!-- Dynamic Breakdown populated here -->
+              </div>
+
+              <div style="margin-top: 24px;">
+                <label class="form-label" style="margin-bottom: 12px; display: block;">Select Payment Method:</label>
+                <div class="select-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                  <div class="selectable-card selected" onclick="bookingWizard.selectPaymentMethod(this, 'Credit Card / Mada')">
+                    <div style="font-weight: 700;">💳 Credit Card / Mada</div>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary);">Instant automated receipt</div>
+                  </div>
+                  <div class="selectable-card" onclick="bookingWizard.selectPaymentMethod(this, 'Apple Pay')">
+                    <div style="font-weight: 700;">🍏 Apple Pay</div>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary);">1-Touch authorization</div>
+                  </div>
+                  <div class="selectable-card" onclick="bookingWizard.selectPaymentMethod(this, 'Bank Transfer (SAR / IDR)')">
+                    <div style="font-weight: 700;">🏦 Bank Transfer</div>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary);">Al-Rajhi / BCA / Mandiri</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 8: CONFIRMATION -->
+            <div id="step-pane-8" class="step-pane">
+              <div class="confirmation-card" id="step8-confirmation-content">
+                <!-- Confirmation content populated here -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Wizard Footer Controls -->
+          <div class="booking-summary-bar" id="wizard-summary-bar">
+            <div class="summary-pill-group">
+              <div class="summary-pill" id="summary-pill-service">Service: <span>-</span></div>
+              <div class="summary-pill" id="summary-pill-slot">Slot: <span>-</span></div>
+              <div class="summary-pill" id="summary-pill-total" style="font-weight: 700; color: var(--gold-hover);">Total: <span>-</span></div>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+              <button id="wizard-prev-btn" onclick="bookingWizard.prevStep()" class="btn btn-secondary" style="display: none;">Back</button>
+              <button id="wizard-next-btn" onclick="bookingWizard.nextStep()" class="btn btn-primary">Continue</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: CLIENT SELF-SERVICE PORTAL -->
+    <div id="view-client-portal" style="display: none; padding: 60px 0;">
+      <div class="container container-narrow">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <span class="section-subtitle">Client Self-Service</span>
+          <h2 class="section-title">Manage Your Madinah Photoshoot</h2>
+          <p class="section-description">Lookup your booking to view status, download iCal invitations, reschedule date, or contact your photographer.</p>
+        </div>
+
+        <div class="selectable-card" style="margin-bottom: 32px;">
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <input type="text" id="client-search-booking-id" class="form-input" style="flex: 1; min-width: 240px;" placeholder="Enter Booking ID (e.g. MDN-2026-0001)">
+            <button onclick="clientPortal.searchBooking()" class="btn btn-primary">Find Booking</button>
+          </div>
+        </div>
+
+        <div id="client-booking-detail-card" style="display: none;">
+          <!-- Populated dynamically by client-portal.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 4: ADMIN DASHBOARD & CONTROL CENTER -->
+    <div id="view-admin" class="admin-wrapper" style="display: none;">
+      <div class="container">
+        
+        <!-- Admin Header -->
+        <div class="admin-header">
+          <div>
+            <span style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--gold-hover); font-weight: 600;">Control Center</span>
+            <h1 style="font-size: 2rem;">Madinah Studio Management</h1>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button onclick="app.switchView('public')" class="btn btn-secondary btn-sm">Public Site</button>
+            <button onclick="adminDashboard.refreshData()" class="btn btn-dark btn-sm">↻ Refresh Data</button>
+          </div>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-title">Today's Shoots</div>
+            <div class="kpi-value" id="kpi-today-shoots">0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Upcoming Bookings</div>
+            <div class="kpi-value" id="kpi-upcoming-shoots">0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Total Revenue (SAR)</div>
+            <div class="kpi-value" id="kpi-revenue" style="color: var(--gold-hover);">SAR 0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Pending Payments</div>
+            <div class="kpi-value" id="kpi-pending-payments">0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Cancellation Rate</div>
+            <div class="kpi-value" id="kpi-cancellation-rate">0%</div>
+          </div>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs-nav">
+          <button class="admin-tab-btn active" onclick="adminDashboard.switchTab('calendar')">🗓️ Visual Calendar</button>
+          <button class="admin-tab-btn" onclick="adminDashboard.switchTab('bookings')">📋 All Bookings</button>
+          <button class="admin-tab-btn" onclick="adminDashboard.switchTab('availability')">⏰ Availability & Overrides</button>
+          <button class="admin-tab-btn" onclick="adminDashboard.switchTab('portfolio')">🖼️ Portfolio CMS</button>
+          <button class="admin-tab-btn" onclick="adminDashboard.switchTab('notifications')">💬 WhatsApp Center</button>
+          <button class="admin-tab-btn" onclick="adminDashboard.switchTab('settings')">⚙️ Studio Rules</button>
+        </div>
+
+        <!-- TAB 1: VISUAL CALENDAR -->
+        <div id="admin-tab-calendar" class="admin-tab-content">
+          <div class="admin-calendar-box">
+            <div class="admin-cal-controls">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="cal-nav-btn" onclick="adminDashboard.prevMonth()">‹</button>
+                <h3 style="font-size: 1.3rem;" id="admin-cal-month-title">August 2026</h3>
+                <button class="cal-nav-btn" onclick="adminDashboard.nextMonth()">›</button>
+              </div>
+              <div style="display: flex; gap: 8px; font-size: 0.78rem;">
+                <span class="status-pill CONFIRMED">Confirmed</span>
+                <span class="status-pill PENDING">Pending</span>
+                <span class="status-pill CANCELLED">Cancelled</span>
+              </div>
+            </div>
+
+            <div class="cal-weekdays" style="margin-bottom: 8px;">
+              <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+            </div>
+            <div class="admin-cal-grid" id="admin-calendar-grid">
+              <!-- Dynamically populated month calendar with bookings -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: BOOKINGS TABLE -->
+        <div id="admin-tab-bookings" class="admin-tab-content" style="display: none;">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Client</th>
+                  <th>Service & Package</th>
+                  <th>Date & Time</th>
+                  <th>Photographer</th>
+                  <th>Location</th>
+                  <th>Total / Deposit</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-bookings-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: AVAILABILITY & DATE OVERRIDES -->
+        <div id="admin-tab-availability" class="admin-tab-content" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px;">
+            
+            <!-- Date Overrides Creator & List -->
+            <div class="selectable-card">
+              <h3 style="font-size: 1.2rem; margin-bottom: 16px;">✦ Date Overrides & Blackouts</h3>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 20px;">
+                Date overrides take absolute precedence over weekly recurring schedules (e.g. marking a specific day OFF or setting special holiday hours).
+              </p>
+
+              <form id="override-form" onsubmit="adminDashboard.createOverride(event)" class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Select Date *</label>
+                  <input type="date" id="override-date-input" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Photographer</label>
+                  <select id="override-photog-select" class="form-select">
+                    <option value="all">All Photographers</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Action</label>
+                  <select id="override-is-off" class="form-select" onchange="adminDashboard.toggleOverrideHours(this.value)">
+                    <option value="1">Mark Full Day OFF (Closed)</option>
+                    <option value="0">Custom Operating Hours</option>
+                  </select>
+                </div>
+                <div class="form-group" id="override-hours-group" style="display: none;">
+                  <label class="form-label">Custom Hours (Start - End)</label>
+                  <div style="display: flex; gap: 8px;">
+                    <input type="time" id="override-start-time" class="form-input" value="10:00">
+                    <input type="time" id="override-end-time" class="form-input" value="18:00">
+                  </div>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label class="form-label">Reason / Note</label>
+                  <input type="text" id="override-reason" class="form-input" placeholder="e.g. Saudi National Day, Private VIP shoot, Maintenance">
+                </div>
+                <div style="grid-column: 1 / -1;">
+                  <button type="submit" class="btn btn-primary btn-sm">Add Date Override</button>
+                </div>
+              </form>
+
+              <h4 style="font-size: 0.95rem; margin: 28px 0 12px;">Active Date Overrides</h4>
+              <div id="admin-overrides-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+            </div>
+
+            <!-- Weekly Schedule Timetable -->
+            <div class="selectable-card">
+              <h3 style="font-size: 1.2rem; margin-bottom: 16px;">✦ Weekly Standard Hours</h3>
+              <div id="admin-weekly-rules-container" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB 4: PORTFOLIO CMS -->
+        <div id="admin-tab-portfolio" class="admin-tab-content" style="display: none;">
+          <div class="selectable-card" style="margin-bottom: 24px;">
+            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">Add New Portfolio Showcase</h3>
+            <form onsubmit="adminDashboard.addPortfolioItem(event)" class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Title *</label>
+                <input type="text" id="cms-port-title" class="form-input" placeholder="e.g. Golden Hour at Nabawi Courtyard" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Category *</label>
+                <select id="cms-port-cat" class="form-select">
+                  <option value="Umrah Memories">Umrah Memories</option>
+                  <option value="Portrait">Solo Portrait</option>
+                  <option value="Couple">Couple & Honeymoon</option>
+                  <option value="Family">Family Gatherings</option>
+                  <option value="Golden Hour">Golden Hour</option>
+                  <option value="Heritage">Madinah Heritage</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Image URL / Path *</label>
+                <input type="text" id="cms-port-img" class="form-input" value="/static/images/hero_sunset.jpg" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Location Tag</label>
+                <input type="text" id="cms-port-loc" class="form-input" value="Masjid Nabawi Perimeter">
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <button type="submit" class="btn btn-primary btn-sm">Add to Gallery</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="portfolio-grid" id="admin-portfolio-grid"></div>
+        </div>
+
+        <!-- TAB 5: WHATSAPP NOTIFICATION CENTER -->
+        <div id="admin-tab-notifications" class="admin-tab-content" style="display: none;">
+          <div class="selectable-card">
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">Instant WhatsApp Dispatch Templates</h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px;">Pre-formatted WhatsApp messages for 1-click delivery to international pilgrims.</p>
+            
+            <div id="admin-whatsapp-templates-list" style="display: flex; flex-direction: column; gap: 20px;">
+              <!-- Populated with quick dispatch links for recent bookings -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: STUDIO SETTINGS -->
+        <div id="admin-tab-settings" class="admin-tab-content" style="display: none;">
+          <div class="selectable-card" style="max-width: 680px;">
+            <h3 style="font-size: 1.2rem; margin-bottom: 16px;">Booking & Operational Rules</h3>
+            <form onsubmit="adminDashboard.saveSettings(event)" class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Minimum Notice Period (Hours)</label>
+                <input type="number" id="setting-notice-hours" class="form-input" value="6">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Default Travel Buffer Time (Minutes)</label>
+                <input type="number" id="setting-buffer-min" class="form-input" value="30">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Cancellation Deadline (Hours)</label>
+                <input type="number" id="setting-cancellation-hours" class="form-input" value="48">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Official Studio WhatsApp</label>
+                <input type="text" id="setting-whatsapp-num" class="form-input" value="+966541234567">
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <button type="submit" class="btn btn-primary btn-sm">Save Studio Rules</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: RESCHEDULE / ACTIONS -->
+  <div id="app-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="app.closeModal()">✕</button>
+      <div id="modal-body-container"></div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-title" style="color: #fff; font-size: 1.4rem; margin-bottom: 6px;">NOOR MADINAH</div>
+        <div class="brand-subtitle" style="margin-bottom: 16px;">Fine Art Photography</div>
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.88rem; line-height: 1.7; max-width: 340px;">
+          Preserving sacred memories, pilgrimages, and heartfelt milestones in the Radiant City of Madinah with timeless editorial craftsmanship.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">Experiences</h4>
+        <ul class="footer-links-list">
+          <li><a class="footer-link" onclick="app.startBooking()">Solo Portraits</a></li>
+          <li><a class="footer-link" onclick="app.startBooking()">Couple & Honeymoon</a></li>
+          <li><a class="footer-link" onclick="app.startBooking()">Family Pilgrimage</a></li>
+          <li><a class="footer-link" onclick="app.startBooking()">Golden Hour Session</a></li>
+          <li><a class="footer-link" onclick="app.startBooking()">Private City Tour</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">Locations</h4>
+        <ul class="footer-links-list">
+          <li><a class="footer-link" onclick="app.scrollToSection('locations')">Masjid Nabawi</a></li>
+          <li><a class="footer-link" onclick="app.scrollToSection('locations')">Mount Uhud</a></li>
+          <li><a class="footer-link" onclick="app.scrollToSection('locations')">Quba Date Palm Oasis</a></li>
+          <li><a class="footer-link" onclick="app.scrollToSection('locations')">Old Madinah Heritage</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">Madinah Studio</h4>
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.88rem; margin-bottom: 12px;">
+          📍 King Fahd Road, Central Area, Al-Madinah Al-Munawwarah, KSA
+        </p>
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.88rem; margin-bottom: 16px;">
+          💬 WhatsApp: +966 54 123 4567
+        </p>
+        <a href="https://wa.me/966541234567" target="_blank" class="btn btn-primary btn-sm" style="color: #141312;">Contact on WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="container footer-bottom-row">
+      <span>© 2026 NOOR MADINAH PHOTOGRAPHY. All rights reserved.</span>
+      <span>Asia/Riyadh Standard Time (UTC+3) • Ministry of Tourism Licensed</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/booking-engine.js"></script>
+  <script src="/static/js/client-portal.js"></script>
+  <script src="/static/js/admin-dashboard.js"></script>
+</body>
+</html>
