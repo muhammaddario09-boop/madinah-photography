@@ -543,6 +543,9 @@
         <div class="admin-tabs-nav">
           <button class="admin-tab-btn active" onclick="adminDashboard.switchTab('calendar')">🗓️ Visual Calendar</button>
           <button class="admin-tab-btn" onclick="adminDashboard.switchTab('bookings')">📋 All Bookings</button>
+          <button class="admin-tab-btn" onclick="adminDashboard.switchTab('services')">🏷️ Services CMS</button>
+          <button class="admin-tab-btn" onclick="adminDashboard.switchTab('locations')">📍 Locations CMS</button>
+          <button class="admin-tab-btn" onclick="adminDashboard.switchTab('photographers')">👤 Photographers CMS</button>
           <button class="admin-tab-btn" onclick="adminDashboard.switchTab('availability')">⏰ Availability & Overrides</button>
           <button class="admin-tab-btn" onclick="adminDashboard.switchTab('portfolio')">🖼️ Portfolio CMS</button>
           <button class="admin-tab-btn" onclick="adminDashboard.switchTab('notifications')">💬 WhatsApp Center</button>
@@ -574,27 +577,68 @@
           </div>
         </div>
 
-        <!-- TAB 2: BOOKINGS TABLE -->
+        <!-- TAB 2: ALL BOOKINGS -->
         <div id="admin-tab-bookings" class="admin-tab-content" style="display: none;">
           <div class="data-table-wrap">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Booking ID</th>
+                  <th>ID</th>
                   <th>Client</th>
                   <th>Service & Package</th>
                   <th>Date & Time</th>
-                  <th>Photographer</th>
+                  <th>Artist</th>
                   <th>Location</th>
                   <th>Total / Deposit</th>
                   <th>Status</th>
-                  <th>Actions</th>
+                  <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="admin-bookings-tbody">
-                <!-- Populated dynamically -->
-              </tbody>
+              <tbody id="admin-bookings-tbody"></tbody>
             </table>
+          </div>
+        <!-- TAB: EDIT PAKET & HARGA CMS -->
+        <div id="admin-tab-services" class="admin-tab-content" style="display: none;">
+          <div class="selectable-card" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <span class="section-subtitle">Katalog Layanan</span>
+                <h3 style="font-size: 1.3rem;">🏷️ Edit Daftar Paket & Harga Pemotretan</h3>
+              </div>
+              <button onclick="adminDashboard.saveServicesCMS()" class="btn btn-primary btn-sm">💾 Simpan Semua Harga</button>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 20px;">
+              Ubah harga (SAR), durasi menit, dan jumlah foto editan langsung di sini. Perubahan langsung tampil di halaman depan publik!
+            </p>
+            <div id="admin-services-cms-list" style="display: flex; flex-direction: column; gap: 20px;"></div>
+          </div>
+        </div>
+
+        <!-- TAB: EDIT LOKASI FOTO CMS -->
+        <div id="admin-tab-locations" class="admin-tab-content" style="display: none;">
+          <div class="selectable-card" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <span class="section-subtitle">Spot Fotografi</span>
+                <h3 style="font-size: 1.3rem;">📍 Edit Lokasi Pemotretan di Madinah</h3>
+              </div>
+              <button onclick="adminDashboard.saveLocationsCMS()" class="btn btn-primary btn-sm">💾 Simpan Lokasi</button>
+            </div>
+            <div id="admin-locations-cms-list" style="display: flex; flex-direction: column; gap: 16px;"></div>
+          </div>
+        </div>
+
+        <!-- TAB: EDIT FOTOGRAFER CMS -->
+        <div id="admin-tab-photographers" class="admin-tab-content" style="display: none;">
+          <div class="selectable-card" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <span class="section-subtitle">Tim Artist</span>
+                <h3 style="font-size: 1.3rem;">👤 Edit Profil Tim & Fotografer</h3>
+              </div>
+              <button onclick="adminDashboard.savePhotographersCMS()" class="btn btn-primary btn-sm">💾 Simpan Tim</button>
+            </div>
+            <div id="admin-photographers-cms-list" style="display: flex; flex-direction: column; gap: 16px;"></div>
           </div>
         </div>
 

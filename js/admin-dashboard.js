@@ -13,6 +13,9 @@ const adminDashboard = {
     this.refreshData();
     this.populatePhotographerOptions();
     this.loadWhatsAppBotSettings();
+    this.renderServicesCMS();
+    this.renderLocationsCMS();
+    this.renderPhotographersCMS();
   },
 
   refreshData() {
@@ -46,6 +49,160 @@ const adminDashboard = {
     this.renderBookingsTable();
     this.renderWhatsAppTab();
     this.renderSettingsTab();
+    this.renderServicesCMS();
+    this.renderLocationsCMS();
+    this.renderPhotographersCMS();
+  },
+
+  // ---------------- CMS 1: SERVICES & PACKAGES ---------------- //
+  renderServicesCMS() {
+    const container = document.getElementById('admin-services-cms-list');
+    if (!container) return;
+
+    container.innerHTML = app.services.map((s, sIdx) => {
+      const pkgsHtml = s.packages.map((p, pIdx) => `
+        <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 14px; margin-top: 10px;">
+          <div class="form-grid" style="align-items: center;">
+            <div class="form-group">
+              <label class="form-label">Nama Paket</label>
+              <input type="text" class="form-input" id="cms-pkg-name-${sIdx}-${pIdx}" value="${p.name}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Harga Paket (SAR)</label>
+              <input type="number" class="form-input" id="cms-pkg-price-${sIdx}-${pIdx}" value="${p.price_sar}" step="10">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Durasi (Menit)</label>
+              <input type="number" class="form-input" id="cms-pkg-dur-${sIdx}-${pIdx}" value="${p.duration_min}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Jumlah Foto Edit</label>
+              <input type="number" class="form-input" id="cms-pkg-photos-${sIdx}-${pIdx}" value="${p.edited_photos_count}">
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      return `
+        <div style="background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h4 style="font-size: 1.15rem; color: var(--gold-hover); font-weight: 700;">📸 ${s.title}</h4>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">${s.packages.length} Paket Tersedia</span>
+          </div>
+          ${pkgsHtml}
+        </div>
+      `;
+    }).join('');
+  },
+
+  saveServicesCMS() {
+    app.services.forEach((s, sIdx) => {
+      s.packages.forEach((p, pIdx) => {
+        const nameEl = document.getElementById(`cms-pkg-name-${sIdx}-${pIdx}`);
+        const priceEl = document.getElementById(`cms-pkg-price-${sIdx}-${pIdx}`);
+        const durEl = document.getElementById(`cms-pkg-dur-${sIdx}-${pIdx}`);
+        const photosEl = document.getElementById(`cms-pkg-photos-${sIdx}-${pIdx}`);
+
+        if (nameEl) p.name = nameEl.value.trim();
+        if (priceEl) p.price_sar = parseFloat(priceEl.value);
+        if (durEl) p.duration_min = parseInt(durEl.value);
+        if (photosEl) p.edited_photos_count = parseInt(photosEl.value);
+      });
+      // Update starting price
+      s.starting_price_sar = Math.min(...s.packages.map(x => x.price_sar));
+    });
+
+    localStorage.setItem('madinah_custom_services', JSON.stringify(app.services));
+    app.renderServices(app.services);
+    app.showToast('Semua harga dan paket pemotretan berhasil diperbarui & disimpan!', 'success');
+  },
+
+  // ---------------- CMS 2: LOCATIONS ---------------- //
+  renderLocationsCMS() {
+    const container = document.getElementById('admin-locations-cms-list');
+    if (!container) return;
+
+    container.innerHTML = app.locations.map((loc, idx) => `
+      <div style="background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 16px;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Nama Lokasi (Latin)</label>
+            <input type="text" class="form-input" id="cms-loc-name-${idx}" value="${loc.name}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nama Arab</label>
+            <input type="text" class="form-input" id="cms-loc-ar-${idx}" value="${loc.arabic_name || ''}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Travel Buffer Time (Menit)</label>
+            <input type="number" class="form-input" id="cms-loc-buf-${idx}" value="${loc.travel_buffer_min}">
+          </div>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  saveLocationsCMS() {
+    app.locations.forEach((loc, idx) => {
+      const nameEl = document.getElementById(`cms-loc-name-${idx}`);
+      const arEl = document.getElementById(`cms-loc-ar-${idx}`);
+      const bufEl = document.getElementById(`cms-loc-buf-${idx}`);
+
+      if (nameEl) loc.name = nameEl.value.trim();
+      if (arEl) loc.arabic_name = arEl.value.trim();
+      if (bufEl) loc.travel_buffer_min = parseInt(bufEl.value);
+    });
+
+    localStorage.setItem('madinah_custom_locations', JSON.stringify(app.locations));
+    app.renderLocations(app.locations);
+    app.showToast('Lokasi pemotretan berhasil diperbarui!', 'success');
+  },
+
+  // ---------------- CMS 3: PHOTOGRAPHERS ---------------- //
+  renderPhotographersCMS() {
+    const container = document.getElementById('admin-photographers-cms-list');
+    if (!container) return;
+
+    container.innerHTML = app.photographers.map((p, idx) => `
+      <div style="background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 16px;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Nama Fotografer</label>
+            <input type="text" class="form-input" id="cms-photog-name-${idx}" value="${p.name}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gelar / Role</label>
+            <input type="text" class="form-input" id="cms-photog-title-${idx}" value="${p.title}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nomor Kontak / WhatsApp</label>
+            <input type="text" class="form-input" id="cms-photog-phone-${idx}" value="${p.phone}">
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label class="form-label">Spesialisasi</label>
+            <input type="text" class="form-input" id="cms-photog-spec-${idx}" value="${p.specialties || ''}">
+          </div>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  savePhotographersCMS() {
+    app.photographers.forEach((p, idx) => {
+      const nameEl = document.getElementById(`cms-photog-name-${idx}`);
+      const titleEl = document.getElementById(`cms-photog-title-${idx}`);
+      const phoneEl = document.getElementById(`cms-photog-phone-${idx}`);
+      const specEl = document.getElementById(`cms-photog-spec-${idx}`);
+
+      if (nameEl) p.name = nameEl.value.trim();
+      if (titleEl) p.title = titleEl.value.trim();
+      if (phoneEl) p.phone = phoneEl.value.trim();
+      if (specEl) p.specialties = specEl.value.trim();
+    });
+
+    localStorage.setItem('madinah_custom_photographers', JSON.stringify(app.photographers));
+    app.renderPhotographers(app.photographers);
+    app.showToast('Profil fotografer berhasil diperbarui!', 'success');
   },
 
   populatePhotographerOptions() {

@@ -116,6 +116,7 @@ const app = {
   init() {
     this.startMadinahClock();
     this.loadCustomizedSettings();
+    this.loadCustomData();
     this.loadCustomPortfolio();
     this.renderPortfolio(this.portfolio);
     this.renderServices(this.services);
@@ -123,6 +124,19 @@ const app = {
     this.renderPhotographers(this.photographers);
     this.updateAdminNavButton();
     this.handleInitialRouting();
+  },
+
+  loadCustomData() {
+    try {
+      const customServices = localStorage.getItem('madinah_custom_services');
+      if (customServices) this.services = JSON.parse(customServices);
+
+      const customLocations = localStorage.getItem('madinah_custom_locations');
+      if (customLocations) this.locations = JSON.parse(customLocations);
+
+      const customPhotogs = localStorage.getItem('madinah_custom_photographers');
+      if (customPhotogs) this.photographers = JSON.parse(customPhotogs);
+    } catch(e) {}
   },
 
   loadCustomizedSettings() {
