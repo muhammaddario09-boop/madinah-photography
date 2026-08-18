@@ -312,38 +312,60 @@ const bookingWizard = {
     const buffer = this.selectedLocation ? this.selectedLocation.travel_buffer_min : 30;
 
     if (calcInfo) {
-      calcInfo.textContent = `⚡ Session: ${duration}m | Travel Buffer: +${buffer}m`;
+      calcInfo.textContent = `⚡ Durasi: ${duration}m | Buffer Perjalanan: +${buffer}m`;
     }
 
-    // Hitung slot dinamis Asia/Riyadh (06:00 - 21:00)
-    const slots = [];
-    const allCandidateHours = [
-      { time: "06:00", end: "07:15", badge: "Sunrise Golden Hour 🌅" },
-      { time: "07:30", end: "08:45", badge: "Morning Serenity 🕊️" },
-      { time: "09:00", end: "10:15", badge: null },
-      { time: "10:30", end: "11:45", badge: null },
-      { time: "13:00", end: "14:15", badge: null },
-      { time: "14:30", end: "15:45", badge: null },
-      { time: "16:00", end: "17:15", badge: "Late Afternoon Glow 🌤️" },
-      { time: "17:30", end: "18:45", badge: "Sunset Golden Hour ✨" },
-      { time: "19:00", end: "20:15", badge: "Illuminated Courtyard 🌙" },
-      { time: "20:30", end: "21:45", badge: null }
-    ];
+    // Ambil konfigurasi jam aktif dari pengaturan Studio
+    const settings = JSON.parse(localStorage.getItem('madinah_studio_settings') || '{}');
+    const startTimeStr = settings.startTime || "06:00";
+    const endTimeStr = settings.endTime || "21:30";
+    const intervalMins = parseInt(settings.slotInterval || "75");
 
-    // Filter existing local bookings
+    const [startH, startM] = startTimeStr.split(":").map(Number);
+    const [endH, endM] = endTimeStr.split(":").map(Number);
+    const startTotalMins = startH * 60 + startM;
+    const endTotalMins = endH * 60 + endM;
+
+    // Generate Candidate Hours Dinamis
+    const allCandidateHours = [];
+    for (let m = startTotalMins; m + duration <= endTotalMins; m += intervalMins) {
+      const h = Math.floor(m / 60) % 24;
+      const min = m % 60;
+      const timeStr = `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+
+      const endSlotM = m + duration;
+      const endH = Math.floor(endSlotM / 60) % 24;
+      const endMin = endSlotM % 60;
+      const endTimeFormatted = `${String(endH).padStart(2, '0')}:${String(endMin).padStart(2, '0')}`;
+
+      let badgeText = null;
+      if (m >= 330 && m <= 420) badgeText = "Sunrise Golden Hour 🌅";
+      else if (m >= 450 && m <= 570) badgeText = "Morning Serenity 🕊️";
+      else if (m >= 960 && m <= 1035) badgeText = "Late Afternoon Glow 🌤️";
+      else if (m >= 1035 && m <= 1140) badgeText = "Sunset Golden Hour ✨";
+      else if (m >= 1170) badgeText = "Illuminated Courtyard 🌙";
+
+      allCandidateHours.push({
+        time: timeStr,
+        end: endTimeFormatted,
+        badge: badgeText
+      });
+    }
+
+    // Filter existing bookings
     const savedBookings = JSON.parse(localStorage.getItem('madinah_bookings') || '[]');
     const bookedTimes = savedBookings.filter(b => b.booking_date === this.selectedDateStr && b.status !== 'CANCELLED').map(b => b.start_time);
 
     const availableSlots = allCandidateHours.filter(s => !bookedTimes.includes(s.time));
 
-    if (badge) badge.textContent = `${availableSlots.length} slots available`;
+    if (badge) badge.textContent = `${availableSlots.length} slot tersedia`;
 
     container.innerHTML = availableSlots.map(s => {
       const isSelected = this.selectedTimeSlot && this.selectedTimeSlot.time === s.time;
       return `
         <button type="button" class="slot-btn ${isSelected ? 'selected' : ''}" onclick='bookingWizard.selectSlot(${JSON.stringify(s)})'>
           <span class="slot-time">${s.time}</span>
-          ${s.badge ? `<span class="slot-badge">${s.badge}</span>` : `<span style="font-size: 0.72rem; color: var(--text-muted);">${duration}m shoot</span>`}
+          ${s.badge ? `<span class="slot-badge">${s.badge}</span>` : `<span style="font-size: 0.72rem; color: var(--text-muted);">${duration}m sesi</span>`}
         </button>
       `;
     }).join('');

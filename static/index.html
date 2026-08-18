@@ -773,17 +773,36 @@
               </div>
 
               <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
-                <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--gold-hover);">⚙️ Pengaturan Operasional & WhatsApp</h4>
+                <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--gold-hover);">⏰ Pengaturan Jam Aktif & Sesi Pemotretan (Waktu Madinah)</h4>
               </div>
 
               <div class="form-group">
-                <label class="form-label">Official Studio WhatsApp (Penerima Booking)</label>
-                <input type="text" id="setting-whatsapp-num" class="form-input" value="+966541234567" placeholder="+628... / +9665...">
+                <label class="form-label">Jam Mulai Sesi Pertama (Opening Time)</label>
+                <input type="time" id="setting-start-time" class="form-input" value="06:00">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Jam Selesai Sesi Terakhir (Closing Time)</label>
+                <input type="time" id="setting-end-time" class="form-input" value="21:30">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Interval Antar Sesi (Menit)</label>
+                <select id="setting-slot-interval" class="form-select">
+                  <option value="60">Setiap 60 Menit (1 Jam)</option>
+                  <option value="75" selected>Setiap 75 Menit (Standar)</option>
+                  <option value="90">Setiap 90 Menit (1.5 Jam)</option>
+                  <option value="120">Setiap 120 Menit (2 Jam)</option>
+                </select>
               </div>
 
               <div class="form-group">
                 <label class="form-label">Default Travel Buffer Time (Menit)</label>
                 <input type="number" id="setting-buffer-min" class="form-input" value="30">
+              </div>
+
+              <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+                <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--gold-hover);">⚙️ Pengaturan Operasional & WhatsApp</h4>
               </div>
 
               <div class="form-group">

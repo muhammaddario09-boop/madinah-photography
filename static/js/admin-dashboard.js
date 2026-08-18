@@ -349,6 +349,10 @@ const adminDashboard = {
     if (saved.heroTitle && document.getElementById('setting-hero-title')) document.getElementById('setting-hero-title').value = saved.heroTitle;
     if (saved.leadPhotog && document.getElementById('setting-lead-photog')) document.getElementById('setting-lead-photog').value = saved.leadPhotog;
 
+    if (saved.startTime && document.getElementById('setting-start-time')) document.getElementById('setting-start-time').value = saved.startTime;
+    if (saved.endTime && document.getElementById('setting-end-time')) document.getElementById('setting-end-time').value = saved.endTime;
+    if (saved.slotInterval && document.getElementById('setting-slot-interval')) document.getElementById('setting-slot-interval').value = saved.slotInterval;
+
     if (saved.whatsapp) document.getElementById('setting-whatsapp-num').value = saved.whatsapp;
     if (saved.notice) document.getElementById('setting-notice-hours').value = saved.notice;
     if (saved.buffer) document.getElementById('setting-buffer-min').value = saved.buffer;
@@ -364,6 +368,10 @@ const adminDashboard = {
       brandTagline: document.getElementById('setting-brand-tagline').value.trim(),
       heroTitle: document.getElementById('setting-hero-title').value.trim(),
       leadPhotog: document.getElementById('setting-lead-photog').value.trim(),
+
+      startTime: document.getElementById('setting-start-time').value,
+      endTime: document.getElementById('setting-end-time').value,
+      slotInterval: document.getElementById('setting-slot-interval').value,
 
       whatsapp: document.getElementById('setting-whatsapp-num').value.trim(),
       notice: document.getElementById('setting-notice-hours').value,
@@ -385,7 +393,7 @@ const adminDashboard = {
       body: JSON.stringify(settings)
     }).catch(() => {});
 
-    app.showToast('Semua nama brand, fotografer & pengaturan berhasil disimpan!', 'success');
+    app.showToast('Jam aktif pemotretan & pengaturan studio berhasil disimpan!', 'success');
   },
 
   openBookingDrawer(bookingId) {
