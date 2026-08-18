@@ -216,11 +216,12 @@ const adminDashboard = {
     this.currentTab = tabName;
     const tabButtons = document.querySelectorAll('.admin-tab-btn');
     tabButtons.forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('onclick').includes(tabName));
+      const onclickAttr = btn.getAttribute('onclick') || '';
+      btn.classList.toggle('active', onclickAttr.includes(`'${tabName}'`));
     });
 
-    const tabs = ['calendar', 'bookings', 'availability', 'portfolio', 'notifications', 'settings'];
-    tabs.forEach(t => {
+    const allTabs = ['calendar', 'bookings', 'services', 'locations', 'photographers', 'availability', 'portfolio', 'notifications', 'settings'];
+    allTabs.forEach(t => {
       const el = document.getElementById(`admin-tab-${t}`);
       if (el) el.style.display = (t === tabName) ? 'block' : 'none';
     });
