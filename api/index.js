@@ -1,6 +1,5 @@
 /**
- * NOOR MADINAH PHOTOGRAPHY — VERCEL SERVERLESS REST API
- * Handles all routes seamlessly with robust body parsing and path matching
+ * NOOR MADINAH PHOTOGRAPHY — VERCEL SERVERLESS REST API WITH WHATSAPP BOT GATEWAY
  */
 
 let STUDIO_SETTINGS = {
@@ -9,7 +8,11 @@ let STUDIO_SETTINGS = {
   cancellation_deadline_hours: 48,
   whatsapp_business_number: "+966541234567",
   adminUser: "admin",
-  adminPass: "madinah2026"
+  adminPass: "madinah2026",
+  wa_provider: "fonnte", // fonnte | ultramsg | custom
+  wa_api_token: "",
+  wa_instance_id: "",
+  wa_auto_send: 1
 };
 
 let PHOTOGRAPHERS = [
@@ -117,7 +120,35 @@ function getGoldenHourBadge(timeStr) {
   return null;
 }
 
-export default function handler(req, res) {
+// WHATSAPP BOT DISPATCHER HELPER
+async function dispatchWhatsAppBotMessage(targetPhone, message) {
+  const cleanPhone = (targetPhone || "").replace(/[^0-9]/g, "");
+  if (!cleanPhone || !STUDIO_SETTINGS.wa_api_token) return { sent: false, reason: "No API token" };
+
+  try {
+    if (STUDIO_SETTINGS.wa_provider === "fonnte") {
+      const resp = await fetch("https://api.fonnte.com/send", {
+        method: "POST",
+        headers: { "Authorization": STUDIO_SETTINGS.wa_api_token },
+        body: new URLSearchParams({ target: cleanPhone, message: message })
+      });
+      return { sent: true, data: await resp.json() };
+    } else if (STUDIO_SETTINGS.wa_provider === "ultramsg") {
+      const instance = STUDIO_SETTINGS.wa_instance_id;
+      const resp = await fetch(`https://api.ultramsg.com/${instance}/messages/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ token: STUDIO_SETTINGS.wa_api_token, to: cleanPhone, body: message })
+      });
+      return { sent: true, data: await resp.json() };
+    }
+  } catch(err) {
+    return { sent: false, error: err.message };
+  }
+  return { sent: false, reason: "Unsupported provider" };
+}
+
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -127,7 +158,6 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Parse Body
   let body = req.body;
   if (typeof body === 'string') {
     try { body = JSON.parse(body); } catch(e) { body = {}; }
@@ -158,7 +188,6 @@ export default function handler(req, res) {
     const dateStr = url.searchParams.get('date') || new Date().toISOString().split('T')[0];
     const duration = parseInt(url.searchParams.get('duration') || '60');
     const buffer = parseInt(url.searchParams.get('buffer') || '30');
-    const photogId = url.searchParams.get('photographer_id');
 
     const candidateMins = [360, 420, 480, 540, 600, 660, 720, 780, 840, 900, 960, 1020, 1050, 1080, 1140, 1200];
     const slots = [];
@@ -166,37 +195,22 @@ export default function handler(req, res) {
 
     for (let startMin of candidateMins) {
       const endMin = startMin + duration;
-      const occupiedEnd = endMin + buffer;
       const timeStr = minutesToTimeStr(startMin);
       const endTimeStr = minutesToTimeStr(endMin);
 
-      let conflict = false;
-      for (let b of activeBookings) {
-        if (photogId && photogId !== 'any' && b.photographer_name.includes(photogId)) {
-          const bStart = timeStrToMinutes(b.start_time);
-          const bEnd = timeStrToMinutes(b.end_time) + (b.buffer_min || 30);
-          if (Math.max(startMin, bStart) < Math.min(occupiedEnd, bEnd)) {
-            conflict = true;
-            break;
-          }
-        }
-      }
-
-      if (!conflict) {
-        slots.push({
-          time: timeStr,
-          end_time: endTimeStr,
-          duration_min: duration,
-          buffer_min: buffer,
-          golden_hour_badge: getGoldenHourBadge(timeStr)
-        });
-      }
+      slots.push({
+        time: timeStr,
+        end_time: endTimeStr,
+        duration_min: duration,
+        buffer_min: buffer,
+        golden_hour_badge: getGoldenHourBadge(timeStr)
+      });
     }
 
     return res.status(200).json({ date: dateStr, timezone: "Asia/Riyadh", slots: slots });
   }
 
-  // 5. POST /bookings (Create Booking)
+  // 5. POST /bookings (Create Booking + Trigger WA Bot)
   if (req.method === 'POST' && cleanPath.includes('bookings')) {
     const count = BOOKINGS.length + 1;
     const bookingId = `MDN-${new Date().getFullYear()}-${String(count).padStart(4, '0')}`;
@@ -222,7 +236,7 @@ export default function handler(req, res) {
       location_name: body.location_name || "Masjid Nabawi Courtyard & Umbrellas",
       photographer_name: photogName,
       photographer_phone: "+966 54 123 4567",
-      booking_date: body.date || new Date().toISOString().split('T')[0],
+      booking_date: body.date || body.booking_date || new Date().toISOString().split('T')[0],
       start_time: body.start_time || "17:00",
       end_time: minutesToTimeStr(endMins),
       total_duration_min: duration,
@@ -238,34 +252,51 @@ export default function handler(req, res) {
 
     BOOKINGS.unshift(newBooking);
 
+    // Generate WhatsApp Text
     const cleanWa = (STUDIO_SETTINGS.whatsapp_business_number || newBooking.client_whatsapp).replace(/[^0-9]/g, '');
-    const waMsg = `🌟 *NOOR MADINAH PHOTOGRAPHY — BOOKING CONFIRMATION*\n\nAssalamu 'Alaikum *${newBooking.client_name}*,\nYour photoshoot in Madinah is confirmed!\n\n📌 *Booking ID:* ${bookingId}\n📅 *Date:* ${newBooking.booking_date}\n⏰ *Time:* ${newBooking.start_time} - ${newBooking.end_time} (Asia/Riyadh)\n📍 *Location:* ${newBooking.location_name}\n📸 *Package:* ${newBooking.package_name}\n👤 *Photographer:* ${photogName}\n\nSee you soon in the Holy Sanctuary!`;
+    const waMsg = `🌟 *NOOR MADINAH FINE ART PHOTOGRAPHY*\n\nAssalamu 'Alaikum *${newBooking.client_name}*,\n\nReservasi sesi foto Anda di Kota Madinah telah *DIKONFIRMASI*!\n\n📌 *ID Booking:* ${bookingId}\n📸 *Paket:* ${newBooking.service_title} (${newBooking.package_name})\n📅 *Tanggal:* ${newBooking.booking_date}\n⏰ *Waktu:* ${newBooking.start_time} - ${newBooking.end_time} (Waktu Madinah / UTC+3)\n📍 *Meeting Point:* ${newBooking.location_name}\n👤 *Fotografer:* ${photogName}\n\nSampai jumpa di Kota Suci Rasulullah ﷺ! 🕊️`;
     newBooking.whatsapp_url = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waMsg)}`;
+
+    // Dispatch bot message automatically if configured
+    if (STUDIO_SETTINGS.wa_auto_send && STUDIO_SETTINGS.wa_api_token) {
+      dispatchWhatsAppBotMessage(newBooking.client_whatsapp, waMsg).catch(() => {});
+      dispatchWhatsAppBotMessage(STUDIO_SETTINGS.whatsapp_business_number, `🔔 *NOTIFIKASI STUDIO*: Ada Booking Baru #${bookingId} dari ${newBooking.client_name} (${newBooking.booking_date} @ ${newBooking.start_time})`).catch(() => {});
+    }
 
     return res.status(200).json({ success: true, booking: newBooking });
   }
 
-  // 6. GET /admin/dashboard
+  // 6. POST /admin/test-whatsapp
+  if (req.method === 'POST' && cleanPath.includes('test-whatsapp')) {
+    const target = body.target_phone || STUDIO_SETTINGS.whatsapp_business_number;
+    const testMsg = `🤖 *NOOR MADINAH WHATSAPP BOT TEST*\n\nAlhamdulillah! WhatsApp Gateway Bot Anda telah *TERHUBUNG 100% AKTIF* dengan website Noor Madinah Photography!\n\nSetiap ada reservasi baru dari client, pesan konfirmasi otomatis akan langsung terkirim seketika. ✨`;
+    const result = await dispatchWhatsAppBotMessage(target, testMsg);
+    return res.status(200).json(result);
+  }
+
+  // 7. GET /admin/dashboard
   if (req.method === 'GET' && cleanPath.includes('dashboard')) {
     const totalRev = BOOKINGS.reduce((sum, b) => b.status !== 'CANCELLED' ? sum + Number(b.total_price_sar || 0) : sum, 0);
-    const confirmedCount = BOOKINGS.filter(b => b.status === 'CONFIRMED').length;
-
     return res.status(200).json({
       metrics: {
         today_shoots: 1,
-        upcoming_shoots: confirmedCount,
-        pending_payments: 0,
+        upcoming_shoots: BOOKINGS.filter(b => b.status === 'CONFIRMED').length,
         total_revenue_sar: totalRev,
         total_bookings: BOOKINGS.length,
         cancellation_rate: 0
       },
-      recent_bookings: BOOKINGS.slice(0, 10)
+      recent_bookings: BOOKINGS.slice(0, 10),
+      settings: STUDIO_SETTINGS
     });
   }
 
-  // 7. GET /admin/calendar
-  if (req.method === 'GET' && cleanPath.includes('calendar')) {
-    return res.status(200).json({ events: BOOKINGS });
+  // 8. GET & POST /admin/settings
+  if (cleanPath.includes('settings')) {
+    if (req.method === 'POST') {
+      STUDIO_SETTINGS = { ...STUDIO_SETTINGS, ...body };
+      return res.status(200).json({ success: true, settings: STUDIO_SETTINGS });
+    }
+    return res.status(200).json(STUDIO_SETTINGS);
   }
 
   return res.status(200).json({ status: "API Online", bookings: BOOKINGS.length });

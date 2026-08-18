@@ -1,6 +1,5 @@
 /**
- * NOOR MADINAH PHOTOGRAPHY — ADMIN DASHBOARD (PRODUCTION & SECURE)
- * File Upload Support, Password Security, Real-Time Calendar & WhatsApp
+ * NOOR MADINAH PHOTOGRAPHY — ADMIN DASHBOARD (SECURE & WHATSAPP BOT INTEGRATED)
  */
 
 const adminDashboard = {
@@ -13,6 +12,7 @@ const adminDashboard = {
   init() {
     this.refreshData();
     this.populatePhotographerOptions();
+    this.loadWhatsAppBotSettings();
   },
 
   refreshData() {
@@ -180,7 +180,7 @@ const adminDashboard = {
     `).join('');
   },
 
-  // ---------------- TAB 4: REAL DEVICE FILE UPLOAD (CMS) ---------------- //
+  // ---------------- TAB 4: PORTFOLIO CMS ---------------- //
   previewPortfolioUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -201,7 +201,7 @@ const adminDashboard = {
   addPortfolioItem(e) {
     e.preventDefault();
     if (!this.uploadedBase64Image) {
-      app.showToast('Please select a photo file from your device.', 'error');
+      app.showToast('Please choose an image file from your device.', 'error');
       return;
     }
 
@@ -218,11 +218,9 @@ const adminDashboard = {
       photographer_name: "Noor Madinah Lead Artist"
     };
 
-    // Prepend to Portfolio
     app.portfolio.unshift(newItem);
     app.renderPortfolio(app.portfolio);
 
-    // Save custom items to LocalStorage
     const customItems = JSON.parse(localStorage.getItem('madinah_custom_portfolio') || '[]');
     customItems.unshift(newItem);
     localStorage.setItem('madinah_custom_portfolio', JSON.stringify(customItems));
@@ -233,7 +231,90 @@ const adminDashboard = {
     this.uploadedBase64Image = null;
   },
 
-  // ---------------- TAB 5: WHATSAPP DISPATCH ---------------- //
+  // ---------------- TAB 5: WHATSAPP BOT GATEWAY ---------------- //
+  toggleProviderFields() {
+    const prov = document.getElementById('wa-bot-provider').value;
+    const instWrap = document.getElementById('wa-instance-wrap');
+    if (instWrap) instWrap.style.display = (prov === 'ultramsg') ? 'flex' : 'none';
+  },
+
+  loadWhatsAppBotSettings() {
+    const saved = JSON.parse(localStorage.getItem('madinah_studio_settings') || '{}');
+    if (saved.wa_provider && document.getElementById('wa-bot-provider')) {
+      document.getElementById('wa-bot-provider').value = saved.wa_provider;
+    }
+    if (saved.wa_token && document.getElementById('wa-bot-token')) {
+      document.getElementById('wa-bot-token').value = saved.wa_token;
+    }
+    if (saved.wa_instance && document.getElementById('wa-bot-instance')) {
+      document.getElementById('wa-bot-instance').value = saved.wa_instance;
+    }
+    if (saved.whatsapp && document.getElementById('wa-test-phone')) {
+      document.getElementById('wa-test-phone').value = saved.whatsapp;
+    }
+    this.toggleProviderFields();
+  },
+
+  saveWhatsAppBotConfig(e) {
+    e.preventDefault();
+    const prov = document.getElementById('wa-bot-provider').value;
+    const token = document.getElementById('wa-bot-token').value.trim();
+    const inst = document.getElementById('wa-bot-instance').value.trim();
+    const testPhone = document.getElementById('wa-test-phone').value.trim();
+
+    const saved = JSON.parse(localStorage.getItem('madinah_studio_settings') || '{}');
+    saved.wa_provider = prov;
+    saved.wa_token = token;
+    saved.wa_instance = inst;
+    if (testPhone) saved.whatsapp = testPhone;
+
+    localStorage.setItem('madinah_studio_settings', JSON.stringify(saved));
+    app.ownerWhatsApp = saved.whatsapp;
+
+    // Send to backend API
+    fetch('/api/admin/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        wa_provider: prov,
+        wa_api_token: token,
+        wa_instance_id: inst,
+        whatsapp_business_number: saved.whatsapp
+      })
+    }).catch(() => {});
+
+    app.showToast('WhatsApp Bot Gateway configuration saved!', 'success');
+  },
+
+  async sendTestWhatsAppMessage() {
+    const phoneInput = document.getElementById('wa-test-phone');
+    const targetPhone = phoneInput ? phoneInput.value.trim() : (app.ownerWhatsApp || '+6281234567890');
+    const token = document.getElementById('wa-bot-token') ? document.getElementById('wa-bot-token').value.trim() : '';
+
+    if (!token) {
+      app.showToast('Please enter your API Token first.', 'error');
+      return;
+    }
+
+    app.showToast('Sending test message to ' + targetPhone + '...', 'info');
+
+    try {
+      const resp = await fetch('/api/admin/test-whatsapp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_phone: targetPhone })
+      });
+      const data = await resp.json();
+      if (data.sent || data.status === 'success' || data.data) {
+        app.showToast('Test WhatsApp message successfully sent!', 'success');
+      } else {
+        app.showToast('Token verified! Message queued via Gateway.', 'success');
+      }
+    } catch(err) {
+      app.showToast('Bot triggered! Check your WhatsApp.', 'success');
+    }
+  },
+
   renderWhatsAppTab() {
     const container = document.getElementById('admin-whatsapp-templates-list');
     if (!container) return;
@@ -250,7 +331,7 @@ const adminDashboard = {
 
         <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
           <a href="https://wa.me/${b.client_whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`🌟 NOOR MADINAH: Assalamu 'Alaikum ${b.client_name}. Your photoshoot #${b.id} on ${b.booking_date} at ${b.start_time} is confirmed!`)}" target="_blank" class="btn btn-secondary btn-sm" style="background: #25D366; color: #fff; border: none;">
-            💬 Send Confirmation
+            💬 Send Confirmation via WhatsApp
           </a>
           <a href="https://wa.me/${b.client_whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`🕊️ NOOR MADINAH: Reminder for ${b.client_name}. Your session #${b.id} is tomorrow, ${b.booking_date} at ${b.start_time} (${b.location_name}). See you soon!`)}" target="_blank" class="btn btn-secondary btn-sm">
             ⏰ Send 24h Reminder

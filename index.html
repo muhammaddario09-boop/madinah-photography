@@ -697,16 +697,53 @@
           <div class="portfolio-grid" id="admin-portfolio-grid"></div>
         </div>
 
-        <!-- TAB 5: WHATSAPP NOTIFICATION CENTER -->
+        <!-- TAB 5: WHATSAPP BOT CENTER -->
         <div id="admin-tab-notifications" class="admin-tab-content" style="display: none;">
-          <div class="selectable-card">
-            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">Instant WhatsApp Dispatch Templates</h3>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px;">Pre-formatted WhatsApp messages for 1-click delivery to international pilgrims.</p>
-            
-            <div id="admin-whatsapp-templates-list" style="display: flex; flex-direction: column; gap: 20px;">
-              <!-- Populated with quick dispatch links for recent bookings -->
+          <div class="selectable-card" style="margin-bottom: 24px; border-color: #25D366;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <span class="section-subtitle" style="color: #16a34a;">🤖 WhatsApp Bot Gateway</span>
+                <h3 style="font-size: 1.3rem;">Hubungkan Bot WhatsApp Otomatis</h3>
+              </div>
+              <span class="status-pill CONFIRMED" id="wa-bot-status-pill">Gateway Ready</span>
             </div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 18px;">
+              Setiap ada client yang booking di website, bot akan <strong>otomatis mengirim tiket konfirmasi ke nomor WA client</strong> dan memberi tahu Anda seketika.
+            </p>
+
+            <form onsubmit="adminDashboard.saveWhatsAppBotConfig(event)" class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Pilih Provider Gateway</label>
+                <select id="wa-bot-provider" class="form-select" onchange="adminDashboard.toggleProviderFields()">
+                  <option value="fonnte">Fonnte (Paling Mudah - Scan QR WhatsApp Anda)</option>
+                  <option value="ultramsg">UltraMsg (Instance ID & Token)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">API Token / Key</label>
+                <input type="text" id="wa-bot-token" class="form-input" placeholder="Contoh token: 9xKd7#mP01q..." required>
+              </div>
+
+              <div class="form-group" id="wa-instance-wrap" style="display: none;">
+                <label class="form-label">UltraMsg Instance ID</label>
+                <input type="text" id="wa-bot-instance" class="form-input" placeholder="instance12345">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Nomor WhatsApp Penerima Uji Coba</label>
+                <input type="text" id="wa-test-phone" class="form-input" placeholder="Contoh: 081234567890 / 62812...">
+              </div>
+
+              <div style="grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px;">
+                <button type="submit" class="btn btn-primary btn-sm" style="background: #25D366; color: #fff; border: none;">💾 Simpan Konfigurasi Bot</button>
+                <button type="button" onclick="adminDashboard.sendTestWhatsAppMessage()" class="btn btn-dark btn-sm">📲 Uji Coba Kirim Pesan WA</button>
+              </div>
+            </form>
           </div>
+
+          <h3 style="font-size: 1.15rem; margin-bottom: 14px;">Template Pesan & Riwayat Pengiriman Client</h3>
+          <div style="display: flex; flex-direction: column; gap: 12px;" id="admin-whatsapp-templates-list"></div>
         </div>
 
         <!-- TAB 6: STUDIO SETTINGS -->
