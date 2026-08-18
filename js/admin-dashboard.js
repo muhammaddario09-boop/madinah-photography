@@ -242,18 +242,19 @@ const adminDashboard = {
     const saved = JSON.parse(localStorage.getItem('madinah_studio_settings') || '{}');
     const prov = saved.wa_provider || 'ultramsg';
     const inst = saved.wa_instance || 'instance188819';
+    const token = saved.wa_token || 'ruhmg8qq5gcpezim';
 
     if (document.getElementById('wa-bot-provider')) {
       document.getElementById('wa-bot-provider').value = prov;
     }
-    if (saved.wa_token && document.getElementById('wa-bot-token')) {
-      document.getElementById('wa-bot-token').value = saved.wa_token;
+    if (document.getElementById('wa-bot-token')) {
+      document.getElementById('wa-bot-token').value = token;
     }
     if (document.getElementById('wa-bot-instance')) {
       document.getElementById('wa-bot-instance').value = inst;
     }
-    if (saved.whatsapp && document.getElementById('wa-test-phone')) {
-      document.getElementById('wa-test-phone').value = saved.whatsapp;
+    if (document.getElementById('wa-test-phone')) {
+      document.getElementById('wa-test-phone').value = saved.whatsapp || '+6281958856316';
     }
     this.toggleProviderFields();
   },

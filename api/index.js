@@ -2,11 +2,11 @@ let STUDIO_SETTINGS = {
   minimum_notice_hours: 6,
   default_buffer_min: 30,
   cancellation_deadline_hours: 48,
-  whatsapp_business_number: "+966541234567",
+  whatsapp_business_number: "+6281958856316",
   adminUser: "admin",
   adminPass: "madinah2026",
   wa_provider: "ultramsg",
-  wa_api_token: "",
+  wa_api_token: "ruhmg8qq5gcpezim",
   wa_instance_id: "instance188819",
   wa_auto_send: 1
 };
