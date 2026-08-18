@@ -1,7 +1,3 @@
-/**
- * NOOR MADINAH PHOTOGRAPHY — VERCEL SERVERLESS REST API WITH WHATSAPP BOT GATEWAY
- */
-
 let STUDIO_SETTINGS = {
   minimum_notice_hours: 6,
   default_buffer_min: 30,
@@ -9,9 +5,9 @@ let STUDIO_SETTINGS = {
   whatsapp_business_number: "+966541234567",
   adminUser: "admin",
   adminPass: "madinah2026",
-  wa_provider: "fonnte", // fonnte | ultramsg | custom
+  wa_provider: "ultramsg",
   wa_api_token: "",
-  wa_instance_id: "",
+  wa_instance_id: "instance188819",
   wa_auto_send: 1
 };
 
