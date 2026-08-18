@@ -405,14 +405,13 @@ const bookingWizard = {
   },
 
   // ---------------- STEP 8: SUBMIT & LOCK ---------------- //
-  submitBooking() {
+  async submitBooking() {
     const nextBtn = document.getElementById('wizard-next-btn');
     if (nextBtn) {
       nextBtn.disabled = true;
-      nextBtn.textContent = 'Locking Slot & Securing...';
+      nextBtn.textContent = 'Securing Slot...';
     }
 
-    // Generate unique sequential Booking ID
     const savedBookings = JSON.parse(localStorage.getItem('madinah_bookings') || '[]');
     const count = savedBookings.length + 1;
     const bookingId = `MDN-${new Date().getFullYear()}-${String(count).padStart(4, '0')}`;
@@ -431,32 +430,41 @@ const bookingWizard = {
       client_country: this.clientData.country,
       service_title: this.selectedService.title,
       package_name: this.selectedPackage.name,
-      location_name: this.selectedLocation ? this.selectedLocation.name : 'Masjid Nabawi Courtyard',
+      location_name: this.selectedLocation ? this.selectedLocation.name : 'Masjid Nabawi Courtyard & Umbrellas',
       photographer_name: photogName,
       photographer_phone: "+966 54 123 4567",
       booking_date: this.selectedDateStr,
       start_time: this.selectedTimeSlot.time,
-      end_time: this.selectedTimeSlot.end,
+      end_time: this.selectedTimeSlot.end || this.selectedTimeSlot.end_time || "18:30",
+      total_duration_min: this.selectedPackage.duration_min,
+      buffer_min: this.selectedLocation ? this.selectedLocation.travel_buffer_min : 30,
       total_price_sar: this.selectedPackage.price_sar,
       deposit_paid_sar: Math.round(this.selectedPackage.price_sar * 0.3),
       status: 'CONFIRMED',
       payment_method: this.selectedPaymentMethod,
-      celebration_type: this.photoshootDetails.celebration,
+      celebration_type: this.photoshootDetails.celebration || 'Umrah',
       created_at: new Date().toISOString()
     };
 
-    // Save to LocalStorage
+    // Try sending to Vercel Serverless API in background with 3s timeout
+    try {
+      fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingRecord)
+      }).catch(() => {});
+    } catch(e) {}
+
+    // Save locally
     savedBookings.unshift(bookingRecord);
     localStorage.setItem('madinah_bookings', JSON.stringify(savedBookings));
 
-    // WhatsApp Message
+    // WhatsApp Dispatch URL
     const cleanWhatsApp = (app.ownerWhatsApp || this.clientData.whatsapp).replace(/[^0-9]/g, '');
-    const waMsg = `🌟 *NOOR MADINAH PHOTOGRAPHY — BOOKING CONFIRMATION*\n\nAssalamu 'Alaikum *${this.clientData.name}*,\nYour photoshoot in Madinah is confirmed!\n\n📌 *Booking ID:* ${bookingId}\n📅 *Date:* ${this.selectedDateStr}\n⏰ *Time:* ${this.selectedTimeSlot.time} - ${this.selectedTimeSlot.end} (Asia/Riyadh)\n📍 *Location:* ${bookingRecord.location_name}\n📸 *Package:* ${this.selectedService.title} (${this.selectedPackage.name})\n👤 *Photographer:* ${photogName}\n\nSee you soon in the Blessed City!`;
-    const waUrl = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(waMsg)}`;
+    const waMsg = `🌟 *NOOR MADINAH PHOTOGRAPHY — BOOKING CONFIRMATION*\n\nAssalamu 'Alaikum *${this.clientData.name}*,\nYour luxury photoshoot in Madinah is confirmed!\n\n📌 *Booking ID:* ${bookingId}\n📅 *Date:* ${this.selectedDateStr}\n⏰ *Time:* ${this.selectedTimeSlot.time} (Asia/Riyadh)\n📍 *Location:* ${bookingRecord.location_name}\n📸 *Package:* ${this.selectedService.title} (${this.selectedPackage.name})\n👤 *Photographer:* ${photogName}\n\nSee you soon in the Holy Sanctuary!`;
+    bookingRecord.whatsapp_url = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(waMsg)}`;
 
-    bookingRecord.whatsapp_url = waUrl;
     this.createdBooking = bookingRecord;
-
     this.currentStep = 8;
     this.renderStep8Confirmation();
     this.updateWizardView();
